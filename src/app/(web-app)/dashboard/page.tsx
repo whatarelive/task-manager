@@ -1,10 +1,7 @@
-import { Separator } from "@/components/ui/separator";
-
 export default function Dashboard() {
     return (
-        <div>
+        <div className="">
             <h1>Dashboard</h1>
-            <Separator/>
         </div>
     )
 }

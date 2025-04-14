@@ -5,8 +5,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function NavBar() {
     return (
-        <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
-            <div className="container flex h-16 items-center justify-between py-4">
+        <header className="sticky top-0 z-10 h-16 border-b bg-background/95 backdrop-blur shadow-md">
+            <div className="container mx-auto flex h-16 items-center justify-between py-4">
                 <div className="flex items-center gap-2">
                     <ListTodo className="h-6 w-6" />
                     <span className="text-xl font-bold">TaskMaster</span>
