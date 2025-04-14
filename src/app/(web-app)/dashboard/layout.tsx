@@ -4,8 +4,8 @@ interface Props {
 
 export default function DashBoardLayout({ children }: Props) {
     return (
-        <main className="bg-neutral-50 w-full">
+        <div className="bg-neutral-50 w-full">
             { children }
-        </main>
+        </div>
     )
 }

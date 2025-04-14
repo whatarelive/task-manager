@@ -1,4 +1,4 @@
-export function Footer() {
+export const Footer = () => {
     return (
         <footer className="border-t py-6 h-16">
             <div className="container mx-auto flex flex-col items-center justify-center gap-4 md:flex-row">

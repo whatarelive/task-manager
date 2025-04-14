@@ -1,5 +1,5 @@
-import { Footer } from "@/components/dashboard/Footer";
-import { NavBar } from "@/components/dashboard/NavBar";
+import { Footer } from "@/components/global/Footer";
+import { NavBar } from "@/components/global/nav/NavBar";
 import type { ILayoutProps } from "@/interfaces/components.interfaces";
 
 export default function WebAppLayout({ children }: ILayoutProps) {
