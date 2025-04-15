@@ -1,285 +1,33 @@
-"use client"
-
-import { useEffect, useRef, useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, ListTodo, Tag, Calendar, BarChart4, Bell, Lock, Star, ArrowRight, Sparkles } from "lucide-react"
+import { HeroView } from "@/components/home/HeroView";
+import { Snowfall } from "@/components/global/Snowfall";
+import { FeaturesView } from "@/components/home/FeaturesView";
 
 export default function Home() {
-  const [scrollY, setScrollY] = useState(0)
-  const heroRef = useRef<HTMLDivElement>(null)
-
-  // Parallax effect on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY)
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-b from-background via-background to-background">
+    <>
       {/* Animated background elements */}
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-[10%] top-[5%] h-[600px] w-[600px] animate-pulse rounded-full bg-purple-500/10 blur-[120px]" />
-        <div className="absolute -right-[15%] top-[15%] h-[500px] w-[500px] animate-pulse rounded-full bg-cyan-500/10 blur-[120px] [animation-delay:2s]" />
-        <div className="absolute bottom-[5%] left-[20%] h-[700px] w-[700px] animate-pulse rounded-full bg-pink-500/10 blur-[120px] [animation-delay:4s]" />
-        <div className="absolute bottom-[20%] right-[10%] h-[600px] w-[600px] animate-pulse rounded-full bg-amber-500/10 blur-[120px] [animation-delay:6s]" />
+      <div className="pointer-events-none fixed inset-0 z-20 overflow-hidden">
+        <span className="absolute -left-[10%] top-[5%] h-[600px] w-[600px] animate-pulse rounded-full bg-purple-500/10 blur-[120px]" />
+        <span className="absolute -right-[15%] top-[15%] h-[500px] w-[500px] animate-pulse rounded-full bg-cyan-500/10 blur-[120px] [animation-delay:2s]" />
+        <span className="absolute bottom-[5%] left-[20%] h-[700px] w-[700px] animate-pulse rounded-full bg-pink-500/10 blur-[120px] [animation-delay:4s]" />
+        <span className="absolute bottom-[20%] right-[10%] h-[600px] w-[600px] animate-pulse rounded-full bg-amber-500/10 blur-[120px] [animation-delay:6s]" />
       </div>
+  
+      {/* Animated particles */}
+      <Snowfall cant={50}/>
 
-      {/* Floating particles */}
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute h-2 w-2 rounded-full bg-primary/30"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.5 + 0.3,
-              animation: `float ${Math.random() * 10 + 10}s linear infinite`,
-              animationDelay: `${Math.random() * 10}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Hero Section with Parallax */}
+      <HeroView/>
 
-      <header className="sticky top-0 z-50 border-b bg-background/70 backdrop-blur-xl">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-purple-600 text-primary-foreground shadow-lg shadow-primary/20">
-              <ListTodo className="h-5 w-5" />
-            </div>
-            <span className="bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-xl font-bold text-transparent">
-              TaskMaster
-            </span>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link href="/login">
-              <Button
-                variant="ghost"
-                className="group relative overflow-hidden rounded-full px-4 transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-              >
-                <span className="relative z-10">Iniciar sesión</span>
-                <span className="absolute inset-0 -z-10 translate-y-[105%] rounded-full bg-primary/10 transition-transform duration-300 group-hover:translate-y-0" />
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary to-purple-600 px-6 shadow-md shadow-primary/20 transition-all duration-300 hover:shadow-lg hover:shadow-primary/30">
-                <span className="relative z-10">Registrarse</span>
-                <span className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
+      {/* Features Overview with 3D Cards */}
+      <FeaturesView/>
 
-      <main className="flex-1">
-        {/* Hero Section with Parallax */}
-        <section
-          ref={heroRef}
-          className="relative overflow-hidden py-20 md:py-32"
-          style={{
-            backgroundPosition: `50% ${scrollY * 0.5}px`,
-          }}
-        >
-          <div className="absolute inset-0 -z-10">
-            <div
-              className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-70"
-              style={{ transform: `translateY(${scrollY * 0.2}px)` }}
-            />
-          </div>
 
-          {/* Floating shapes */}
-          <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-            <div
-              className="absolute -left-20 top-20 h-64 w-64 rounded-full border border-primary/20 bg-primary/5"
-              style={{ transform: `translate(${scrollY * 0.1}px, ${scrollY * -0.1}px)` }}
-            />
-            <div
-              className="absolute -right-10 bottom-40 h-40 w-40 rounded-full border border-purple-500/20 bg-purple-500/5"
-              style={{ transform: `translate(${scrollY * -0.15}px, ${scrollY * 0.05}px)` }}
-            />
-            <div
-              className="absolute left-1/3 top-1/4 h-20 w-20 rounded-md border border-cyan-500/20 bg-cyan-500/5"
-              style={{ transform: `rotate(${scrollY * 0.05}deg) translate(${scrollY * -0.05}px, ${scrollY * 0.1}px)` }}
-            />
-            <div
-              className="absolute bottom-1/4 right-1/4 h-32 w-32 rounded-lg border border-amber-500/20 bg-amber-500/5"
-              style={{
-                transform: `rotate(${scrollY * -0.03}deg) translate(${scrollY * 0.07}px, ${scrollY * -0.05}px)`,
-              }}
-            />
-          </div>
-
-          <div className="container relative z-10">
-            <div className="mx-auto max-w-4xl text-center">
-              <div className="group mb-6 inline-flex animate-shimmer items-center gap-2 rounded-full bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm">
-                <Sparkles className="h-4 w-4" />
-                <span>Gestión de tareas reimaginada</span>
-                <span className="ml-1 inline-flex animate-pulse rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-white">
-                  NUEVO
-                </span>
-              </div>
-
-              <h1 className="mb-6 animate-gradient-text bg-gradient-to-r from-primary via-purple-600 to-primary bg-300% bg-clip-text text-4xl font-extrabold leading-tight tracking-tight text-transparent sm:text-5xl md:text-6xl">
-                Organiza tus tareas de manera simple y efectiva
-              </h1>
-
-              <p className="mx-auto mb-10 max-w-2xl text-xl text-muted-foreground">
-                TaskMaster te ayuda a gestionar tus tareas diarias, establecer fechas límite y mantener todo organizado
-                en un solo lugar. Colabora con tu equipo en espacios de trabajo compartidos.
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link href="/register">
-                  <Button
-                    size="lg"
-                    className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary to-purple-600 px-8 py-6 text-lg shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30"
-                  >
-                    <span className="relative z-10 flex items-center gap-2">
-                      Comenzar ahora
-                      <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                    <span className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  </Button>
-                </Link>
-                <Link href="#features">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="group relative overflow-hidden rounded-full border-2 px-8 py-6 text-lg shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-md"
-                  >
-                    <span className="relative z-10">Conocer más</span>
-                    <span className="absolute inset-0 -z-10 translate-y-[105%] rounded-full bg-primary/10 transition-transform duration-300 group-hover:translate-y-0" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Dashboard Preview with Glassmorphism */}
-            <div className="mt-16 flex justify-center">
-              <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-1 shadow-2xl backdrop-blur-md">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple-500/20 opacity-30" />
-                <div className="relative rounded-xl overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  <img
-                    src="/placeholder.svg?height=600&width=1200"
-                    alt="TaskMaster Dashboard Preview"
-                    className="w-full object-cover"
-                  />
-
-                  {/* Floating UI elements for visual interest */}
-                  <div className="absolute left-[10%] top-[20%] w-32 animate-float rounded-lg border border-white/20 bg-white/10 p-3 shadow-xl backdrop-blur-md">
-                    <div className="h-2 w-20 rounded-full bg-white/50" />
-                    <div className="mt-2 h-2 w-16 rounded-full bg-white/30" />
-                  </div>
-
-                  <div className="absolute right-[15%] top-[30%] w-40 animate-float rounded-lg border border-white/20 bg-white/10 p-3 shadow-xl backdrop-blur-md [animation-delay:2s]">
-                    <div className="flex items-center gap-2">
-                      <div className="h-4 w-4 rounded-full bg-green-400" />
-                      <div className="h-2 w-24 rounded-full bg-white/50" />
-                    </div>
-                    <div className="mt-2 h-2 w-32 rounded-full bg-white/30" />
-                  </div>
-
-                  <div className="absolute bottom-[25%] left-[20%] w-36 animate-float rounded-lg border border-white/20 bg-white/10 p-3 shadow-xl backdrop-blur-md [animation-delay:4s]">
-                    <div className="flex items-center gap-2">
-                      <div className="h-4 w-4 rounded-full bg-amber-400" />
-                      <div className="h-2 w-20 rounded-full bg-white/50" />
-                    </div>
-                    <div className="mt-2 h-2 w-28 rounded-full bg-white/30" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Overview with 3D Cards */}
-        <section className="container py-24 md:py-32">
-          <div className="mb-16 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <Sparkles className="h-6 w-6 text-primary" />
-            </div>
-            <h2 className="mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-3xl font-bold leading-tight text-transparent sm:text-4xl">
-              Características principales
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Descubre cómo TaskMaster puede transformar tu productividad y la de tu equipo
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="feature-card group relative h-[400px] transform-gpu cursor-pointer overflow-hidden rounded-2xl border bg-card p-8 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-primary/10 opacity-70 blur-2xl transition-all duration-500 group-hover:bg-primary/20 group-hover:blur-3xl" />
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary shadow-lg shadow-primary/10">
-                <ListTodo className="h-8 w-8" />
-              </div>
-              <h3 className="mb-3 text-2xl font-bold transition-transform duration-500 group-hover:translate-y-[-5px]">
-                Gestión de tareas
-              </h3>
-              <p className="text-muted-foreground transition-transform duration-500 group-hover:translate-y-[-5px]">
-                Crea, edita y organiza tus tareas de manera intuitiva. Mantén todo en un solo lugar con una interfaz
-                diseñada para maximizar tu productividad.
-              </p>
-
-              {/* 3D layered effect elements */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 translate-y-full transform-gpu bg-gradient-to-t from-primary/5 to-transparent opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100" />
-              <div className="absolute bottom-8 right-8 flex h-10 w-10 translate-y-[200%] items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-500 group-hover:translate-y-0">
-                <ArrowRight className="h-5 w-5" />
-              </div>
-            </div>
-
-            <div className="feature-card group relative h-[400px] transform-gpu cursor-pointer overflow-hidden rounded-2xl border bg-card p-8 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-cyan-500/10 opacity-70 blur-2xl transition-all duration-500 group-hover:bg-cyan-500/20 group-hover:blur-3xl" />
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 text-cyan-500 shadow-lg shadow-cyan-500/10">
-                <Tag className="h-8 w-8" />
-              </div>
-              <h3 className="mb-3 text-2xl font-bold transition-transform duration-500 group-hover:translate-y-[-5px]">
-                Etiquetas personalizadas
-              </h3>
-              <p className="text-muted-foreground transition-transform duration-500 group-hover:translate-y-[-5px]">
-                Asigna etiquetas de colores para categorizar y filtrar tus tareas según tus necesidades, creando un
-                sistema visual que facilita la organización.
-              </p>
-
-              {/* 3D layered effect elements */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 translate-y-full transform-gpu bg-gradient-to-t from-cyan-500/5 to-transparent opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100" />
-              <div className="absolute bottom-8 right-8 flex h-10 w-10 translate-y-[200%] items-center justify-center rounded-full bg-cyan-500 text-white shadow-lg transition-all duration-500 group-hover:translate-y-0">
-                <ArrowRight className="h-5 w-5" />
-              </div>
-            </div>
-
-            <div className="feature-card group relative h-[400px] transform-gpu cursor-pointer overflow-hidden rounded-2xl border bg-card p-8 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-purple-500/10 opacity-70 blur-2xl transition-all duration-500 group-hover:bg-purple-500/20 group-hover:blur-3xl" />
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 text-purple-500 shadow-lg shadow-purple-500/10">
-                <CheckCircle className="h-8 w-8" />
-              </div>
-              <h3 className="mb-3 text-2xl font-bold transition-transform duration-500 group-hover:translate-y-[-5px]">
-                Seguimiento de progreso
-              </h3>
-              <p className="text-muted-foreground transition-transform duration-500 group-hover:translate-y-[-5px]">
-                Marca tareas como completadas y visualiza tu progreso con estadísticas claras y motivadoras que te
-                ayudan a mantener el impulso.
-              </p>
-
-              {/* 3D layered effect elements */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 translate-y-full transform-gpu bg-gradient-to-t from-purple-500/5 to-transparent opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100" />
-              <div className="absolute bottom-8 right-8 flex h-10 w-10 translate-y-[200%] items-center justify-center rounded-full bg-purple-500 text-white shadow-lg transition-all duration-500 group-hover:translate-y-0">
-                <ArrowRight className="h-5 w-5" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Detailed Features with Glassmorphism */}
+        {/* Detailed Features with Glassmorphism *
         <section id="features" className="relative overflow-hidden py-24 md:py-32">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-70" />
 
-          {/* Animated background shapes */}
+          {/* Animated background shapes *}
           <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
             <div className="absolute left-[10%] top-[20%] h-64 w-64 animate-float rounded-full border border-primary/10 [animation-delay:0s]" />
             <div className="absolute right-[5%] top-[30%] h-96 w-96 animate-float rounded-full border border-purple-500/10 [animation-delay:2s]" />
@@ -522,7 +270,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Why Choose Us Section with Animated Cards */}
+        {/* Why Choose Us Section with Animated Cards *}
         <section className="container py-24 md:py-32">
           <div className="mx-auto mb-16 max-w-3xl text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
@@ -565,7 +313,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Animated border on hover */}
+              {/* Animated border on hover *}
               <div
                 className="absolute inset-0 -z-10 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 style={{
@@ -607,7 +355,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Animated border on hover */}
+              {/* Animated border on hover *}
               <div
                 className="absolute inset-0 -z-10 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 style={{
@@ -648,7 +396,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Animated border on hover */}
+              {/* Animated border on hover *}
               <div
                 className="absolute inset-0 -z-10 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 style={{
@@ -661,7 +409,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section with Animated Cards */}
+        {/* Testimonials Section with Animated Cards *}
         <section className="relative overflow-hidden py-24 md:py-32">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-70" />
           <div className="container relative z-10">
@@ -707,7 +455,7 @@ export default function Home() {
                     exactamente lo que necesitaba!"
                   </p>
 
-                  {/* Animated quote marks */}
+                  {/* Animated quote marks *}
                   <div className="absolute -left-2 -top-2 text-4xl text-primary/10 transition-all duration-500 group-hover:text-primary/20">
                     "
                   </div>
@@ -746,7 +494,7 @@ export default function Home() {
                     productividad de nuestro equipo ha aumentado significativamente."
                   </p>
 
-                  {/* Animated quote marks */}
+                  {/* Animated quote marks *}
                   <div className="absolute -left-2 -top-2 text-4xl text-cyan-500/10 transition-all duration-500 group-hover:text-cyan-500/20">
                     "
                   </div>
@@ -785,7 +533,7 @@ export default function Home() {
                     características que uso todos los días."
                   </p>
 
-                  {/* Animated quote marks */}
+                  {/* Animated quote marks *}
                   <div className="absolute -left-2 -top-2 text-4xl text-amber-500/10 transition-all duration-500 group-hover:text-amber-500/20">
                     "
                   </div>
@@ -824,7 +572,7 @@ export default function Home() {
                     Es una herramienta indispensable para nuestro equipo."
                   </p>
 
-                  {/* Animated quote marks */}
+                  {/* Animated quote marks *}
                   <div className="absolute -left-2 -top-2 text-4xl text-green-500/10 transition-all duration-500 group-hover:text-green-500/20">
                     "
                   </div>
@@ -863,7 +611,7 @@ export default function Home() {
                     dónde estoy invirtiendo mi tiempo."
                   </p>
 
-                  {/* Animated quote marks */}
+                  {/* Animated quote marks *}
                   <div className="absolute -left-2 -top-2 text-4xl text-red-500/10 transition-all duration-500 group-hover:text-red-500/20">
                     "
                   </div>
@@ -902,7 +650,7 @@ export default function Home() {
                     desarrolladores hace que sea perfecta para mi flujo de trabajo."
                   </p>
 
-                  {/* Animated quote marks */}
+                  {/* Animated quote marks *}
                   <div className="absolute -left-2 -top-2 text-4xl text-purple-500/10 transition-all duration-500 group-hover:text-purple-500/20">
                     "
                   </div>
@@ -930,13 +678,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section with Glassmorphism */}
+        {/* CTA Section with Glassmorphism *}
         <section className="container py-20">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-purple-600 p-8 shadow-xl md:p-16">
             <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
             <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
 
-            {/* Animated particles */}
+            {/* Animated particles *}
             <div className="absolute inset-0 overflow-hidden">
               {Array.from({ length: 15 }).map((_, i) => (
                 <div
@@ -1082,10 +830,10 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </footer>
+      </footer> */}
 
       {/* CSS Animations */}
-      <style jsx global>{`
+      {/* <style jsx global>{`
         @keyframes float {
           0% { transform: translateY(0px); }
           50% { transform: translateY(-20px); }
@@ -1108,7 +856,7 @@ export default function Home() {
         .bg-300\% {
           background-size: 300% 100%;
         }
-      `}</style>
-    </div>
+      `}</style> */}
+      </>
   )
 }

@@ -1,19 +1,17 @@
 import Link from "next/link";
-import { ListTodo } from "lucide-react";
+import { Logo } from "@/components/global/Logo";
 import { NavLinks } from "@/components/global/nav/nav-links";
 import { NavDropMenu } from "@/components/global/nav/nav-dropMenu";
-import { buttonVariants } from "@/components/ui/button";
 
 export async function NavBar() {
     // Se recupera la sesión del usuario
     // const session = await auth();
 
     return (
-        <header className="sticky top-0 z-10 h-16 border-b bg-background/95 backdrop-blur shadow-md">
+        <header className="sticky top-0 z-50 h-16 border-b bg-background/95 backdrop-blur shadow-md">
             <div className="container mx-auto flex h-16 items-center justify-between p-4 md:px-14 xl:px-0">
-                <Link href="/" className="flex items-center gap-2 text-xl font-bold">
-                    <ListTodo className="h-6 w-6" />
-                    TaskMaster
+                <Link href="/">
+                    <Logo/>
                 </Link>
 
                 {/* Navegación del panel de administración */}
@@ -21,17 +19,20 @@ export async function NavBar() {
 
                 {/* Se comprueba la sesión del usuario para mostrar el contenido */}
                 {
-                    true ? (
+                    false ? (
                         <NavDropMenu/>
                     ) : (
                         <Link 
-                            href="/auth/login" 
-                            className={buttonVariants({ 
-                                variant: "outline", 
-                                // className: "hover:text-white hover:bg-green-500 hover:border-green-500" 
-                            })}
+                            href="/auth" 
+                            className="group py-2 text-white relative overflow-hidden rounded-full bg-gradient-to-r 
+                            from-primary to-purple-600 px-6 shadow-md shadow-primary/20 transition-all duration-300 
+                            hover:shadow-lg hover:shadow-primary/30"
                         >
-                            Iniciar Sesión
+                            <span className="relative z-10">Iniciar Sesión</span>
+                            <span 
+                                className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-primary opacity-0 
+                                transition-opacity duration-300 group-hover:opacity-100" 
+                            />
                         </Link>
                     )
                 }
