@@ -1,5 +1,5 @@
 import { BarChart4, Bell, Calendar, CheckCircle, Sparkles, Tag, Lock } from "lucide-react";
-import { Snowfall } from "@/components/global/Snowfall";
+import { Snowfall } from "@/components/global/AnimateParticle";
 import { Background } from "@/components/global/Background";
 import { FeatureDetailCard } from "@/components/features/FeatureDetailCard";
 import type { FeatureDetail } from "@/interfaces/data.interfaces";

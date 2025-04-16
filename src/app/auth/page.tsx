@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ListTodo, User, Mail, Lock, ArrowRight, Sparkles } from "lucide-react"
-import { SnowfallCanvas } from "@/components/global/Snowfall"
+import { SnowfallCanvas } from "@/components/global/AnimateParticle"
 
 export default function AuthPage() {
   const router = useRouter()
