@@ -5,3 +5,8 @@ export interface Feature {
     readonly title: string;
     readonly description: string;
 }
+
+export interface FeatureDetail extends Feature {
+    readonly details: string[];
+    readonly color: string;
+}

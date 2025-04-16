@@ -47,7 +47,7 @@ export const FeaturesView = () => {
 
             {/* Enlace a la página con todas las características */}
             <Link 
-                href="/feuteres" 
+                href="/features" 
                 className="group mx-auto relative text-white overflow-hidden rounded-full 
                 bg-gradient-to-r from-primary to-purple-600 px-8 py-2 text-lg shadow-lg shadow-primary/20 transition-all 
                 duration-300 hover:shadow-xl hover:shadow-primary/30"
