@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ListTodo } from "lucide-react";
+import { Mail, User, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,67 +9,95 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 export default function RegisterPage() {
     return (
-        <div className="container mx-auto flex h-screen w-screen flex-col items-center justify-center">
-            <Link href="/" className="absolute left-4 top-4 md:left-8 md:top-8">
-                <Button variant="ghost" className="flex items-center gap-1">
-                    <ListTodo className="h-5 w-5" />
-                    <span className="font-bold">TaskMaster</span>
-                </Button>
-            </Link>
-
-            <Card className="w-full max-w-md">
-                <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl">Crear una cuenta</CardTitle>
-                    <CardDescription>Ingresa tus datos para registrarte</CardDescription>
+        <section className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-1 shadow-2xl">
+            {/* Formulario de Registro */}
+            <Card className="border-0 shadow-none bg-gradient-to-br from-primary/5 to-purple-500/5 px-4">
+                <CardHeader className="mb-4">
+                    {/* Título con gradiente */}
+                    <CardTitle className="bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-center text-3xl font-bold text-transparent">
+                        Crear una cuenta
+                    </CardTitle>
+                    <CardDescription className="text-center">
+                        Ingresa tus datos para registrarte en la plataforma
+                    </CardDescription>
                 </CardHeader>
 
-                <form>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Nombre</Label>
-                            <Input
-                                id="name"
-                                name="name"
-                                placeholder="Juan Pérez"
-                                required
-                            />
+                <form className="space-y-4">
+                    <CardContent>
+                        <div className="space-y-2 mb-4">
+                            <Label htmlFor="name" className="text-sm font-medium">
+                                Nombre
+                            </Label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-2 h-5 w-5 text-muted-foreground"/>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    placeholder="Juan Pérez"
+                                    className="pl-10"
+                                    required
+                                />
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Correo electrónico</Label>
-                            <Input
-                                id="email"
-                                name="email"
-                                type="email"
-                                placeholder="ejemplo@correo.com"
-                                required
-                            />
+                        <div className="space-y-2 mb-4">
+                            <Label htmlFor="email" className="text-sm font-medium">
+                                Correo electrónico
+                            </Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-2 h-5 w-5 text-muted-foreground" />
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    placeholder="ejemplo@correo.com"
+                                    className="pl-10"
+                                    required
+                                />
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Contraseña</Label>
-                            <Input
-                                id="password"
-                                name="password"
-                                type="password"
-                                required
-                            />
+                        <div className="space-y-2 mb-6">
+                            <Label htmlFor="password" className="text-sm font-medium">
+                                Contraseña
+                            </Label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-2 h-5 w-5 text-muted-foreground" />
+                                <Input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    className="pl-10"
+                                    required
+                                />
+                            </div>
                         </div>
                     </CardContent>
+                    <CardFooter className="flex flex-col">
+                        <Button
+                            type="submit"
+                            className="group relative mt-2 w-full overflow-hidden rounded-full bg-gradient-to-r 
+                            from-primary to-purple-600 py-6 text-lg font-medium shadow-lg shadow-primary/20 transition-all 
+                            duration-300 hover:shadow-xl hover:shadow-primary/30"
+                        >
+                            <span className="relative flex items-center justify-center gap-2">
+                                {/* {isLoading ? "Registrando..." : "Registrarse"} */}
+                                Registrarse
+                            </span>
 
-                    <CardFooter className="flex flex-col space-y-4">
-                        <Button type="submit" className="w-full">
-                            {/* {isLoading ? "Registrando..." : "Registrarse"} */}
-                            Registrarse
+                            <span className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-primary opacity-0 
+                                transition-opacity duration-300 group-hover:opacity-100" />
                         </Button>
-                        
-                        <div className="text-center text-sm">
+
+                        <div className="mt-6 text-center text-sm">
                             ¿Ya tienes una cuenta?{" "}
-                            <Link href="/login" className="underline">
+
+                            <Link href="/auth/login" className="text-primary hover:underline cursor-pointer">
                                 Iniciar sesión
                             </Link>
                         </div>
                     </CardFooter>
                 </form>
             </Card>
-        </div>
+        </section>
     )
 }
