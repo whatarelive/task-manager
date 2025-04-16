@@ -5,7 +5,7 @@ export const Snowfall: FC<{ cant: number }> = ({ cant }) => (
         {Array.from({ length: cant }).map((_, i) => (
             <span
                 key={i}
-                className="absolute w-2 h-2 top-0 bg-cyan-300 rounded-full opacity-80 fall"
+                className="absolute w-2 h-2 top-0 bg-cyan-300/80 rounded-full fall"
                 style={{
                     left: `${Math.random() * 100}%`,
                     opacity: Math.random() * 0.5 + 0.3,

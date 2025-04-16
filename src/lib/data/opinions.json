@@ -1,0 +1,40 @@
+{
+    "opinions": [
+        {
+            "name": "María González",
+            "job": "Diseñadora Freelance",
+            "valoration": 5,
+            "opinion": "TaskMaster ha cambiado completamente mi forma de trabajar. Ahora puedo gestionar todos mis proyectos freelance en un solo lugar, establecer prioridades y nunca perder una fecha límite. ¡Es exactamente lo que necesitaba!"
+        },
+        {
+            "name": "Pedro Rodríguez",
+            "job": "Director de Proyecto, TechSolutions",
+            "valoration": 5,
+            "opinion": "Los espacios de trabajo compartidos han revolucionado la forma en que nuestro equipo colabora. Podemos asignar tareas, hacer seguimiento del progreso y mantener a todos alineados. La productividad de nuestro equipo ha aumentado significativamente."
+        },
+        {
+            "name": "Pepita Martínez",
+            "job": "Estudiante de Posgrado",
+            "valoration": 4,
+            "opinion": "Como estudiante, tengo que equilibrar múltiples proyectos, plazos y responsabilidades. TaskMaster me ayuda a organizar mi vida académica y personal. Las etiquetas de colores y las fechas límite son características que uso todos los días."
+        },
+        {
+            "name": "Miguel Sánchez",
+            "job": "Gerente de Marketing, InnovaMark",
+            "valoration": 5,
+            "opinion": "Nuestro departamento de marketing maneja docenas de campañas simultáneamente. TaskMaster nos permite organizar todo por proyectos, asignar responsabilidades y hacer un seguimiento del progreso. Es una herramienta indispensable para nuestro equipo."
+        },
+        {
+            "name": "Feliberto López",
+            "job": "Emprendedor",
+            "valoration": 4,
+            "opinion": "Como emprendedora, tengo que usar mi tiempo de manera eficiente. TaskMaster me ayuda a priorizar mis tareas diarias y a mantener el enfoque en lo que realmente importa. Las estadísticas me muestran dónde estoy invirtiendo mi tiempo."
+        },
+        {
+            "name": "Javier Morales",
+            "job": "Desarrollador de Software",
+            "valoration": 5,
+            "opinion": "He probado muchas herramientas de gestión de tareas, pero TaskMaster es la más intuitiva y flexible. La capacidad de crear espacios de trabajo para diferentes proyectos y colaborar con otros desarrolladores hace que sea perfecta para mi flujo de trabajo."
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { LinkButton } from "@/components/global/LinkButton";
 
 export const HeroView = () => {
     return (
@@ -30,32 +31,16 @@ export const HeroView = () => {
 
                     {/* Links de Registro y sección de caracteristicas */}
                     <div className="flex flex-wrap justify-center gap-4">
-                        <Link 
-                            href="/register"         
-                            className="group relative text-white overflow-hidden rounded-full bg-gradient-to-r from-primary 
-                            to-purple-600 px-8 py-2 text-lg shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl 
-                            hover:shadow-primary/30"
-                        >
-                            <span className="relative flex items-center gap-2">
-                                Comenzar ahora
-                                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                            </span>
-                            <span 
-                                className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-primary opacity-0 
-                                transition-opacity duration-300 group-hover:opacity-100" 
-                            />
-                        </Link>
-
+                        <LinkButton href="/register" label="Comenzar ahora" icon />
+                       
                         <Link 
                             href="#features"
                             className="group relative overflow-hidden rounded-full border-2 px-8 py-2 text-lg shadow-sm transition-all 
                             duration-300 hover:border-primary/50 hover:shadow-md"
                         >
                             <span className="relative z-20 group-hover:text-primary/50">Conocer más</span>
-                            <span 
-                                className="absolute inset-0 -z-10 translate-y-[105%] rounded-full bg-primary/10 transition-transform 
-                                duration-300 group-hover:translate-y-0" 
-                            />
+                            <span className="absolute inset-0 -z-10 translate-y-[105%] rounded-full bg-primary/10 transition-transform 
+                                duration-300 group-hover:translate-y-0"/>
                         </Link>
                     </div>
                 </div>
@@ -109,7 +94,6 @@ export const HeroView = () => {
                                     <span className="h-4 w-4 rounded-full bg-amber-400" />
                                     <span className="h-2 w-20 rounded-full bg-white/50" />
                                 </div>
-
                                 <div className="mt-2 min-h-2 w-28 rounded-full bg-white/30" />
                             </div>
                         </div>

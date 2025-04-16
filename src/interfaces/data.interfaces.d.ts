@@ -1,12 +1,16 @@
 import type { LucideProps } from "lucide-react";
 
-export interface Feature {
-    icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
+export interface FeatureDetail {
     readonly title: string;
     readonly description: string;
-}
-
-export interface FeatureDetail extends Feature {
+    icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
     readonly details: string[];
     readonly color: string;
+}
+
+export interface Opinions {
+    readonly name: string;
+    readonly job: string;
+    readonly valoration: number;
+    readonly opinion: string;
 }

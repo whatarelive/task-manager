@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/global/Logo";
+import { LinkButton } from "@/components/global/LinkButton";
 import { NavLinks } from "@/components/global/nav/nav-links";
 import { NavDropMenu } from "@/components/global/nav/nav-dropMenu";
 
@@ -19,22 +20,9 @@ export async function NavBar() {
 
                 {/* Se comprueba la sesión del usuario para mostrar el contenido */}
                 {
-                    false ? (
-                        <NavDropMenu/>
-                    ) : (
-                        <Link 
-                            href="/auth" 
-                            className="group py-2 text-white relative overflow-hidden rounded-full bg-gradient-to-r 
-                            from-primary to-purple-600 px-6 shadow-md shadow-primary/20 transition-all duration-300 
-                            hover:shadow-lg hover:shadow-primary/30"
-                        >
-                            <span className="relative z-10">Iniciar Sesión</span>
-                            <span 
-                                className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-primary opacity-0 
-                                transition-opacity duration-300 group-hover:opacity-100" 
-                            />
-                        </Link>
-                    )
+                    false 
+                        ? <NavDropMenu/>
+                        : <LinkButton href="/auth" label="Iniciar Sesión"/>
                 }
             </div>
       </header>
