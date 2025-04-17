@@ -2,7 +2,15 @@ import Link from "next/link";
 import { Logo } from "@/components/global/Logo";
 import { Background } from "@/components/global/Background";
 import { AnimateParticle } from "@/components/global/AnimateParticle";
+
+import type { Metadata } from "next";
 import type { ILayoutProps } from "@/interfaces/components.interfaces";
+
+
+export const metadata: Metadata = {
+    title: "Auth | Task Manager",
+};
+
 
 export default function AuthLayout({ children }: ILayoutProps) {
     return (

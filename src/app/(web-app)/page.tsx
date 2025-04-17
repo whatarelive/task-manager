@@ -50,7 +50,7 @@ export default function Home() {
 
                         {/* Links de Registro y sección de caracteristicas */}
                         <div className="flex flex-wrap justify-center gap-4">
-                            <LinkButton href="/register" label="Comenzar ahora" icon />
+                            <LinkButton href="/auth/register" label="Comenzar ahora" icon />
                         
                             <Link 
                                 href="#features"
@@ -170,7 +170,7 @@ export default function Home() {
                     </div>
 
                     {/* Enlace a la página de registro */}
-                    <LinkButton href="/auth" label="Unete a ellos" icon/>
+                    <LinkButton href="/auth/register" label="Unete a ellos" icon/>
                 </div>
             </section>
 
@@ -200,7 +200,7 @@ export default function Home() {
                         {/* Enlaces de navegación */}
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link 
-                                href="/register"
+                                href="/auth/register"
                                 className="group relative overflow-hidden rounded-full bg-white px-8 py-3 text-lg font-bold 
                                 text-primary shadow-lg transition-all duration-300 hover:bg-white/90 hover:shadow-xl"
                             >
@@ -210,7 +210,7 @@ export default function Home() {
                                 </span>
                             </Link>
                             <Link 
-                                href="/login"
+                                href="/auth/login"
                                 className="group relative overflow-hidden rounded-full border-2 border-white/50 bg-transparent 
                                 px-8 py-2.5 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:bg-white/10 
                                 hover:shadow-xl"

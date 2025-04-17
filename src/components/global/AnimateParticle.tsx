@@ -19,7 +19,7 @@ export const AnimateParticle: FC<Props> = ({ cant, type }) => (
             <span
                 key={i}
                 className={clsx(
-                    "absolute w-2 h-2 rounded-full",
+                    "w-2 fixed h-2 rounded-full",
                     {
                         "-top-2 bg-cyan-300/80 fall" : type === "Snow",
                         "bg-white/30" : type === "Particle"

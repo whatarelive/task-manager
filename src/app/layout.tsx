@@ -1,4 +1,5 @@
 import { titleFont } from "@/config/fonts";
+import { Toaster } from "@/components/ui/sonner";
 
 import type { Metadata } from "next";
 import type { ILayoutProps } from "@/interfaces/components.interfaces";
@@ -14,7 +15,9 @@ export default function RootLayout({ children }: ILayoutProps) {
     return (
         <html lang="en">
             <body className={`${titleFont.className} antialiased`}>
-                {children}
+                { children }
+
+                <Toaster expand richColors/>
             </body>
         </html>
     );

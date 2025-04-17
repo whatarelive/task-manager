@@ -1,13 +1,38 @@
 "use client";
 
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useActionState } from "react";
 import { Mail, User, Lock } from "lucide-react";
+import { createUser } from "@/actions/auth/create-user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { showSuccessToast, showErrorToast } from "@/components/ui/sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import type { StateForm } from "@/interfaces/data.interfaces";
+
+
+// Función auxiliar para manejar el submit y la respuesta del formulario de registro
+async function submitForm(_prevState: StateForm | null, formData: FormData) {
+    // Se realiza la petición de registro al servidor
+    const { result, message } = await createUser(formData);
+    
+    // Manejo de la respuesta
+    if (result) {
+        showSuccessToast({ title: message }) 
+        redirect("/auth/login");
+    }
+    else showErrorToast({ title: message });
+    
+    return null;
+}
+
 
 export default function RegisterPage() {
+    // Hook para manejar el estado del formulario.
+    const [_state, formAction, isLoading] = useActionState(submitForm, null);
+
     return (
         <section className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-1 shadow-2xl backdrop-blur-xl">
             {/* Formulario de inicio de sesión */}
@@ -22,17 +47,17 @@ export default function RegisterPage() {
                     </CardDescription>
                 </CardHeader>
 
-                <form className="space-y-4">
+                <form action={formAction} className="space-y-4">
                     <CardContent>
                         <div className="space-y-2 mb-4">
-                            <Label htmlFor="name" className="text-sm font-medium">
+                            <Label htmlFor="username" className="text-sm font-medium">
                                 Nombre
                             </Label>
                             <div className="relative">
                                 <User className="absolute left-3 top-2 h-5 w-5 text-muted-foreground"/>
                                 <Input
-                                    id="name"
-                                    name="name"
+                                    id="username"
+                                    name="username"
                                     placeholder="Juan Pérez"
                                     className="pl-10"
                                     required
@@ -75,13 +100,13 @@ export default function RegisterPage() {
                     <CardFooter className="flex flex-col">
                         <Button
                             type="submit"
+                            disabled={isLoading}
                             className="group relative mt-2 w-full overflow-hidden rounded-full bg-gradient-to-r 
                             from-primary to-purple-600 py-6 text-lg font-medium shadow-lg shadow-primary/20 transition-all 
                             duration-300 hover:shadow-xl hover:shadow-primary/30"
                         >
                             <span className="relative flex items-center justify-center gap-2">
-                                {/* {isLoading ? "Registrando..." : "Registrarse"} */}
-                                Registrarse
+                                { isLoading ? "Registrando..." : "Registrarse" }
                             </span>
 
                             <span className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-primary opacity-0 

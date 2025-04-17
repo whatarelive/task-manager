@@ -14,6 +14,7 @@ export const DashBoardPreview = () => (
                     height={600}
                     quality={100}
                     unoptimized
+                    priority
                     src="/aplication.png"
                     alt="TaskMaster Dashboard Preview"
                     className="hidden md:block w-full object-cover h-full"
@@ -25,6 +26,7 @@ export const DashBoardPreview = () => (
                     height={300}
                     quality={100}
                     unoptimized
+                    priority
                     src="/aplication_mobile.png"
                     alt="TaskMaster Dashboard Preview"
                     className="md:hidden block object-cover h-full"

@@ -14,3 +14,9 @@ export interface Opinions {
     readonly valoration: number;
     readonly opinion: string;
 }
+
+// Tipo de dato del estado previo del formulario
+export interface StateForm {
+    result?: boolean;
+    message: string;
+}
