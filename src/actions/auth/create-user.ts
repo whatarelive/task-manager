@@ -1,8 +1,6 @@
 "use server";
 
 import z from "zod";
-import prisma from "@/lib/prisma";
-import bcryptjs from "bcryptjs";
 import type { StateForm } from "@/interfaces/data.interfaces";
 
 
@@ -31,17 +29,7 @@ export async function createUser(formData: FormData): Promise<StateForm> {
     }
 
     try {
-        // Encriptación de la contraseña
-        const passwordHash = bcryptjs.hashSync(data.password);
-
         // Se guarda el usuario en la Base de Datos
-        await prisma.user.create({
-            data: {
-                email: data.email.toLowerCase(),
-                username: data.username,
-                password: passwordHash
-            }
-        });
 
         return { 
             result: true,

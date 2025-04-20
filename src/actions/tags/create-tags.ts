@@ -1,7 +1,6 @@
 "use server"
 
 import z from "zod";
-import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import type { StateForm } from "@/interfaces/data.interfaces";
 
@@ -26,12 +25,7 @@ export async function createTags(formData: FormData): Promise<StateForm> {
     }
 
     try {
-        await prisma.tags.create({
-            data: { 
-                name: data.name,
-                color: data.color
-            }
-        });
+        
     
     } catch (_error) {
         return {
