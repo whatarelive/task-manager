@@ -16,7 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Avatar } from "@/components/ui/avatar"
-import { ListTodo, Plus, Search, Users, Briefcase } from "lucide-react"
+import { Plus, Search, Users, Briefcase } from "lucide-react"
 
 // Tipos para nuestros espacios de trabajo
 type WorkspaceRole = "admin" | "editor" | "viewer"

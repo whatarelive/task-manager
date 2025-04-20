@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useParams } from "next/navigation"
+// import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -164,12 +164,12 @@ const initialTasks: Task[] = [
 ]
 
 export default function WorkspaceInfoPage() {
-  const params = useParams()
+  // const params = useParams()
   const workspaceId = "ws-1";
 
   const [workspace, setWorkspace] = useState<Workspace | null>();
   const [tasks, setTasks] = useState<Task[]>([])
-  const [tags, setTags] = useState<TaskTag[]>([])
+  const [tags, setTags] = useState<TaskTag[]>(initialTags)
   const [newTaskTitle, setNewTaskTitle] = useState("")
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
@@ -269,12 +269,12 @@ export default function WorkspaceInfoPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              {/* <Select value={selectedTag || ""} onValueChange={setSelectedTag}>
-                <SelectTrigger className="w-full md:w-40">
+              <Select value={selectedTag ?? ""} onValueChange={setSelectedTag}>
+                <SelectTrigger className="w-full md:w-44">
                   <SelectValue placeholder="Filtrar por etiqueta" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas las etiquetas</SelectItem>
+                  <SelectItem value="all">Todas las etiquetas</SelectItem>
                   {tags.map((tag) => (
                     <SelectItem key={tag.id} value={tag.id ?? ""}>
                       <div className="flex items-center gap-2">
@@ -284,13 +284,13 @@ export default function WorkspaceInfoPage() {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select> */}
-              {/* <Select value={selectedAssignee || ""} onValueChange={setSelectedAssignee}>
-                <SelectTrigger className="w-full md:w-40">
+              </Select>
+              <Select value={selectedAssignee ?? ""} onValueChange={setSelectedAssignee}>
+                <SelectTrigger className="w-full md:w-44">
                   <SelectValue placeholder="Filtrar por asignado" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos los miembros</SelectItem>
+                  <SelectItem value="all">Todos los miembros</SelectItem>
                   {workspace.members.map((member) => (
                     <SelectItem key={member.id} value={member.id ?? "s" }>
                       <div className="flex items-center gap-2">
@@ -302,7 +302,7 @@ export default function WorkspaceInfoPage() {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select> */}
+              </Select>
             </div>
           </div>
 
@@ -321,12 +321,12 @@ export default function WorkspaceInfoPage() {
                     />
                     <div className="grid gap-4 sm:grid-cols-3">
                       <div>
-                        {/* <Select value={selectedTag || ""} onValueChange={setSelectedTag}>
-                          <SelectTrigger>
+                        <Select value={selectedTag ?? ""} onValueChange={setSelectedTag}>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Etiqueta" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">Sin etiqueta</SelectItem>
+                            <SelectItem value="all">Sin etiqueta</SelectItem>
                             {tags.map((tag) => (
                               <SelectItem key={tag.id} value={tag.id ?? "s"}>
                                 <div className="flex items-center gap-2">
@@ -336,7 +336,7 @@ export default function WorkspaceInfoPage() {
                               </SelectItem>
                             ))}
                           </SelectContent>
-                        </Select> */}
+                        </Select>
                       </div>
                       <div>
                         <Popover>
@@ -352,12 +352,12 @@ export default function WorkspaceInfoPage() {
                         </Popover>
                       </div>
                       <div>
-                        {/* <Select value={selectedAssignee || ""} onValueChange={setSelectedAssignee}>
-                          <SelectTrigger>
+                        <Select value={selectedAssignee ?? ""} onValueChange={setSelectedAssignee}>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Asignar a" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">Sin asignar</SelectItem>
+                            <SelectItem value="all">Sin asignar</SelectItem>
                             {workspace.members.map((member) => (
                               <SelectItem key={member.id} value={member.id ?? "s"}>
                                 <div className="flex items-center gap-2">
@@ -369,7 +369,7 @@ export default function WorkspaceInfoPage() {
                               </SelectItem>
                             ))}
                           </SelectContent>
-                        </Select> */}
+                        </Select>
                       </div>
                     </div>
                   </div>
