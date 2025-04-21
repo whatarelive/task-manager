@@ -44,30 +44,17 @@ export function showErrorToast({ title, description }: Props) {
     })
 }
   
-export function showNotificationToast({}: Props) {
-    toast("Nueva notificación", {
-        description: "Tienes un nuevo mensaje en tu bandeja de entrada.",
+export function showNotificationToast({ title, description }: Props) {
+    toast(title, {
+        description: description,
         icon: <Bell className="h-5 w-5" />,
         duration: 3000,
     })
 }
-  
-export function showLoadingToast({}: Props) {
-    toast.promise(
-        new Promise((resolve) => {
-            setTimeout(resolve, 2000)
-        }),
-        {
-            loading: "Procesando tu solicitud...",
-            success: "¡Solicitud procesada correctamente!",
-            error: "Error al procesar la solicitud",
-        },
-    )
-}
-  
-export function showInfoToast({}: Props) {
-    toast.info("Información importante", {
-        description: "Tu suscripción expirará en 7 días.",
+    
+export function showInfoToast({ title, description }: Props) {
+    toast.info(title, {
+        description: description,
         icon: <Info className="h-5 w-5" />,
         duration: 5000,
     })

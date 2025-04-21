@@ -1,6 +1,7 @@
-import z from "zod";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { todoApi } from "@/lib/api/todo-api";
+import type { UserLogin, LoginPost, RequestToken, ResponseToken } from "@/interfaces/auth.interfaces";
 
 
 // Declaración de la configuración de autentificación
@@ -14,7 +15,7 @@ export const authConfig: NextAuthConfig = {
     // Configuración de la estrategia de sesión
     session: { 
         strategy: "jwt",
-        maxAge: 24 * 60 * 60, // 24 horas en segundos
+        maxAge: 23 * 60 * 60, // 23 horas en segundos
     },
 
     // Callbacks para personalizar el comportamiento de la autenticación
@@ -27,8 +28,47 @@ export const authConfig: NextAuthConfig = {
 
         // Callback que se ejecuta cuando se genera el token JWT
         async jwt({ token, user }) {
+            // Si hay un usuario, agrega los tokens de acceso y de refresco al token JWT
             if (user) {
-                token.data = user;
+                token.email = user.email,
+                token.username = user.username,
+                token.first_name = user.first_name,
+                token.last_name = user.last_name,
+                token.accessToken = user.accessToken;
+                token.refreshToken = user.refreshToken;
+                token.accessTokenExpires = Date.now() + 60 * 59 * 1000; // 59 minutos de vida
+                token.refreshTokenExpires = Date.now() + 23 * 60 * 60 * 1000; // 23 horas de vida
+            } else {
+                return token;
+            }
+
+            // Verificar si el token de refresco ha expirado
+            if (token.refreshTokenExpires && Date.now() > token.refreshTokenExpires) {
+                console.log("El token de refresco ha expirado - Cerrando sesión");
+                // Limpiar TODOS los datos del token para forzar el cierre de sesión
+                return null;
+            }
+
+            // Verificar si el token de acceso ha expirado y renovarlo usando el token de refresco
+            if (token.refreshTokenExpires && token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
+                try {
+                    // Intenta renovar el token de acceso usando el token de refresco
+                    const { data } = await todoApi.post<ResponseToken, RequestToken>(
+                        "/user/login/refresh/", 
+                        { refresh: token.refreshToken }
+                    );
+
+                    if (!data) throw new Error("Error al renovar el token");
+
+                    // Actualiza el token de acceso y su tiempo de expiración
+                    token.accessToken = data.access;
+                    token.accessTokenExpires = Date.now() + 60 * 59 * 1000;
+
+                } catch (error) {
+                    console.log("Error al renovar el token de acceso", error);
+                    // En caso de error, limpiar todos los datos del token
+                    return {};
+                }
             }
 
             // Retorna el token JWT modificado
@@ -37,13 +77,24 @@ export const authConfig: NextAuthConfig = {
         
         // Callback que se ejecuta cuando se crea la sesión
         async session({ session, token }) {  
-            // Se agrega la información del usuario a la sesión
-            session.user = token.data as any;
+              // Si no se encuentra el token de acceso se elimina la sesión
+              if (!token.accessToken) return session;
 
-            session.isAuthenticated = session.user !== undefined;
+              // Agrega los tokens de acceso y de refresco a la sesión
+              session.accessToken = token.accessToken;
+              session.refreshToken = token.refreshToken!;
+  
+              // Agrega la información del usuario a la sesión
+              session.user.username = token.username;
+              session.user.email = token.email!;
+              session.user.first_name = token.first_name;
+              session.user.last_name = token.last_name;
 
-            // Retorna la sesión modificada
-            return session;
+              // Se establece el estado de la autentificación
+              session.isAuthenticated = session.accessToken ? true : false;
+  
+              // Retorna la sesión modificada
+              return session;
         },
     },
 
@@ -52,15 +103,27 @@ export const authConfig: NextAuthConfig = {
         Credentials({
             async authorize(credentials) {
                 // Validación de los datos
-                const { success, data } = z
-                    .object({ email: z.string().email(), password: z.string().min(6) })
-                    .safeParse(credentials);
+                if (!credentials) return null;
 
-                if (!success) return null;
+                // Convertir credentials a tipo User de forma segura
+                const user = credentials as unknown as UserLogin;
 
-                const { email, password } = data;
+                // Si es un intento de login, hacer la petición al endpoint de login
+                const { data } = await todoApi.post<LoginPost, UserLogin>('/user/login/', { ...user });
 
-                return data;
+                // Si no hay datos en la respuesta, retornar null
+                if (!data) return null;
+                
+                // Retornar los datos del usuario y sus tokens de acceso
+                return {
+                    username: user.username,
+                    email: "email@gmail.com",
+                    first_name: "first_name",
+                    last_name: "last_name",
+                    accessToken: data.access,
+                    refreshToken: data.refresh
+                }
+                
             }
         })
     ]
