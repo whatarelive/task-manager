@@ -1,3 +1,5 @@
+type NextCache = "default" | "force-cache" | "no-cache" | "no-store" | "only-if-cached" | "reload";
+
 /**
  * Configuración para las peticiones HTTP
  * @interface RequestConfig
@@ -9,6 +11,7 @@ type RequestConfig = {
     baseURL?: string;
     headers?: Record<string, string>;
     params?: Record<string, string>;
+    cache?: NextCache
 };
 
 /**
@@ -85,6 +88,7 @@ export class FetchAdapter {
         const response = await fetch(fullURL.toString(), {
             method,
             headers,
+            cache: config.cache ?? "default",
             body: data ? JSON.stringify(data) : undefined,
         });
 
