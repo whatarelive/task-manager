@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { todoApi } from "@/lib/api/todo-api";
-import type { UserLoginRequest, UserLoginResponse, RequestToken, ResponseToken } from "@/interfaces/auth.interfaces";
+import todoApi from "@/lib/api/todo-api";
+import type { UserLoginRequest, UserLoginResponse, ResponseToken } from "@/interfaces/auth.interfaces";
 
 
 // Declaración de la configuración de autentificación
@@ -52,7 +52,7 @@ export const authConfig: NextAuthConfig = {
             if (token.refreshTokenExpires && token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
                 try {
                     // Intenta renovar el token de acceso usando el token de refresco
-                    const { data } = await todoApi.post<ResponseToken, RequestToken>(
+                    const { data } = await todoApi.post<ResponseToken>(
                         "/user/login/refresh/", 
                         { refresh: token.refreshToken }
                     );
@@ -107,7 +107,7 @@ export const authConfig: NextAuthConfig = {
                 const user = credentials as unknown as UserLoginRequest;
 
                 // Si es un intento de login, hacer la petición al endpoint de login
-                const { data } = await todoApi.post<UserLoginResponse, UserLoginRequest>('/user/login/', { ...user });
+                const { data } = await todoApi.post<UserLoginResponse>('/user/login/', { ...user });
 
                 // Si no hay datos en la respuesta, retornar null
                 if (!data) return null;

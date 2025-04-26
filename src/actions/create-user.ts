@@ -1,9 +1,9 @@
 "use server";
 
 import z from "zod";
-import { todoApi } from "@/lib/api/todo-api";
+import todoApi from "@/lib/api/todo-api";
 import type { StateForm } from "@/interfaces/data.interfaces";
-import type { UserRegisterRequest, UserRegisterResponse } from "@/interfaces/auth.interfaces";
+import type { UserRegisterResponse } from "@/interfaces/auth.interfaces";
 
 
 // Esquema de validación para el formulario de registro del usuario.
@@ -34,7 +34,7 @@ export async function createUser(formData: FormData): Promise<StateForm> {
 
     try {
         // Se guarda el usuario en la Base de Datos
-        const { data } = await todoApi.post<UserRegisterResponse, UserRegisterRequest>(
+        const { data } = await todoApi.post<UserRegisterResponse>(
             "/user/register/", 
             { ...validated.data }
         );

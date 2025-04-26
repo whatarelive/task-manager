@@ -3,8 +3,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { auth } from "@/auth.config";
-import { todoApi } from "@/lib/api/todo-api";
 import { showErrorToast } from "@/components/ui/sonner";
+import todoApi from "@/lib/api/todo-api";
 
 interface Tag {
     id: number;
@@ -80,7 +80,7 @@ export const useTakStore = create<State>()(
                 const session = await auth();
 
                 try {
-                    const { data } = await todoApi.put<Task, { status: string }>(`/${id}`, 
+                    const { data } = await todoApi.put<Task>(`/${id}`, 
                         { status }, 
                         {
                             headers: {

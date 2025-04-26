@@ -2,9 +2,8 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { auth } from "@/auth.config";
-import { todoApi } from "@/lib/api/todo-api";
 import { showErrorToast, showSuccessToast } from "@/components/ui/sonner";
+import todoApi from "@/lib/api/todo-api";
 
 interface Tag {
     id: number;
@@ -20,8 +19,9 @@ interface RequestTag {
 
 interface State {
     tags: Tag[] | null;
+    isLoading: boolean;
     getTags: () => Promise<void>;
-    addTag: (tag: Tag) => Promise<void>;
+    addTag: (tag: Pick<Tag, "name" | "color">) => Promise<void>;
     removeTag: (id: number) => Promise<void>;
     clearTags: () => void;
 }
@@ -29,44 +29,69 @@ interface State {
 export const useTagStore = create<State>()(
     persist(
         (set, get) => ({
-            tags: null,
+            tags: null, // estado con la información de las etiquetas
+            isLoading: false, // estado de carga de la interfaz
 
-            // Métodos
+            // Método para listar todas las etiquetas
             async getTags() {
-                const session = await auth();
+                // Se cambia el estado de carga
+                set({ isLoading: true });
 
                 try {
-                    const { data } = await todoApi.get<RequestTag>("/", {
-                        headers: {
-                            Authorization: `Bearer ${session?.accessToken}`
-                        }
-                    });
+                    // Petición de datos con las etiquetas a la API
+                    const { data } = await todoApi.get<RequestTag>("/");
                     
+                    // Se actualiza el estado con las etiquetas
                     set({ tags: data.results });
 
                 } catch (error) {
                     console.log(error);
-                    return showErrorToast({ title: "Fallo la carga de las etiquetas" });
+
+                    // Se muestra mensaje de error en caso de que falle la petición
+                    showErrorToast({ title: "Fallo la carga de las etiquetas" });
                 }
+
+                // Se cambia el estado de carga
+                set({ isLoading: false });
             },
 
+            // Método para agregar nuevas etiquetas
             async addTag(tag) {
-                const tags = get().tags;
-
-                if (tags) set({ tags: [...tags, tag] });
-                else set({ tags: [tag] });
-            },
-
-            async removeTag(id) {
-                const tags = get().tags;
-                const session = await auth();
+                // Se cambia el estado de carga
+                set({ isLoading: true });
 
                 try {
-                    const { data } = await todoApi.delete<Tag>(`/${id}`, {
-                        headers: {
-                            Authorization: `Bearer ${session?.accessToken}`
-                        }
-                    });
+                    // Petición de datos con las etiquetas a la API
+                    const { data } = await todoApi.post<Tag>(
+                        "/", 
+                        { ...tag },
+                    );
+                    
+                    // Si la información no viene se lanza un error
+                    if (!data) throw new Error("API Error");
+                    
+                    // Si la información es recibida se actualiza el estado 
+                    set(({ tags }) => ({ 
+                        tags:  tags ? [...tags, data ] : [data],
+                    }));
+
+                } catch (error) {
+                    console.log(error);
+
+                    // Se muestra mensaje de error en caso de que falle la petición
+                    showErrorToast({ title: "Fallo la carga de las etiquetas" });
+                }
+
+                // Se cambia el estado de carga
+                set({ isLoading: false });
+            },
+
+            // Método para eliminar una etiqueta
+            async removeTag(id) {
+                const tags = get().tags;
+
+                try {
+                    const { data } = await todoApi.delete<Tag>(`/${id}`);
 
                     const updateTags = tags?.filter((tag) => tag.id !== data.id);
                     

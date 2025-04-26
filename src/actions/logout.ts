@@ -2,9 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { auth, signOut } from "@/auth.config";
-import { todoApi } from "@/lib/api/todo-api";
+import todoApi from "@/lib/api/todo-api";
 import type { StateForm } from "@/interfaces/data.interfaces";
-import type { RequestToken } from "@/interfaces/auth.interfaces";
 
 /** 
  * @description Acción de servidor para manejar el cierre de la sesión,
@@ -17,23 +16,18 @@ export async function logout(): Promise<StateForm> {
 
     try {
         // Petición http al Backend
-        const resp = await todoApi.post<never, RequestToken>(
+        const resp = await todoApi.post(
             // url de la request 
             "/user/logout/", 
             // data de la request
             { refresh: session?.refreshToken },
             // token de acceso para pasar la seguridad
-            {
-                headers: {
-                    Authorization: `Bearer ${session?.accessToken}`
-                }
-            }
         );
 
         // Si el codigo devuelto es 401 el token es invalido
         if (resp.status === 401) {
-            // Se cierra la sesión de lado del servidor
             await signOut({ redirect: false });
+            // Se cierra la sesión de lado del servidor
             isclose = true;
         }
 
