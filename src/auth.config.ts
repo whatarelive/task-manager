@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import todoApi from "@/lib/api/todo-api";
-import type { UserLoginRequest, UserLoginResponse, ResponseToken } from "@/interfaces/auth.interfaces";
+import type { UserLoginResponse, ResponseToken } from "@/interfaces/auth.interfaces";
 
 
 // Declaración de la configuración de autentificación
@@ -103,11 +103,11 @@ export const authConfig: NextAuthConfig = {
                 // Validación de los datos
                 if (!credentials) return null;
 
-                // Convertir credentials a tipo User de forma segura
-                const user = credentials as unknown as UserLoginRequest;
-
                 // Si es un intento de login, hacer la petición al endpoint de login
-                const { data } = await todoApi.post<UserLoginResponse>('/user/login/', { ...user });
+                const { data } = await todoApi.post<UserLoginResponse>(
+                    '/user/login/', 
+                    { ...credentials }
+                );
 
                 // Si no hay datos en la respuesta, retornar null
                 if (!data) return null;

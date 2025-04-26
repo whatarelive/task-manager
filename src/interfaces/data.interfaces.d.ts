@@ -20,3 +20,10 @@ export interface StateForm {
     result?: boolean;
     message: string;
 }
+
+// Tipo de dato del objeto que define la etiqueta
+export interface Tag {
+    id: number;
+    name: string;
+    color: string;
+}

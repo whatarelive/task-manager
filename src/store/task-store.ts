@@ -2,15 +2,9 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { auth } from "@/auth.config";
-import { showErrorToast } from "@/components/ui/sonner";
 import todoApi from "@/lib/api/todo-api";
-
-interface Tag {
-    id: number;
-    name: string;
-    color: string;
-}
+import { showErrorToast } from "@/components/ui/sonner";
+import type { Tag } from "@/interfaces/data.interfaces";
 
 interface Task {
     id: number;
@@ -29,6 +23,7 @@ type ResponseTask = {
 
 type State = {
     tasks: Task[] | null;
+    isLoading: boolean;
     complete: number;
     pendings: number;
     getTaks: () => Promise<void>;
@@ -42,18 +37,13 @@ export const useTakStore = create<State>()(
     persist(
         (set, get) => ({
             tasks: null,
+            isLoading: false,
             complete: 0,
             pendings: 0,
 
             async getTaks() {
-                const session = await auth();
-
                 try {
-                    const { data } = await todoApi.get<ResponseTask>("/", {
-                        headers: {
-                            Authorization: `Bearer ${session?.accessToken}`
-                        }
-                    });
+                    const { data } = await todoApi.get<ResponseTask>("/todo/user/tasks/");
 
                     const complete = data.task.filter((task) => task.status === "complete").length;
                     const pendings = data.task.length - complete;
@@ -67,9 +57,23 @@ export const useTakStore = create<State>()(
             },
 
             async createTask(task) {
-                set((prev) => (
-                    { tasks: prev.tasks ? [...prev.tasks, task] : [task] }
-                ));
+                set({ isLoading: true });
+
+                try {
+                    const { data } = await todoApi.post<Task>("/todo/user/tasks/", { ...task });
+                    
+                    if (!data) throw new Error("Error API");
+
+                    set(({ tasks }) => ({ 
+                        tasks: tasks ? [...tasks, data] : [data] 
+                    }));
+
+                } catch (error) {
+                    console.log(error);
+                    showErrorToast({ title: "Fallo la creación de la tarea" });
+                }
+
+                set({ isLoading: false });
             },
 
             async updateTask(id, status) {
@@ -77,17 +81,8 @@ export const useTakStore = create<State>()(
                 
                 if (!tasks) return;
 
-                const session = await auth();
-
                 try {
-                    const { data } = await todoApi.put<Task>(`/${id}`, 
-                        { status }, 
-                        {
-                            headers: {
-                                Authorization: `Bearer ${session?.accessToken}`
-                            }
-                        }
-                    );
+                    const { data } = await todoApi.put<Task>(`/${id}`, { status });
 
                     const updateData = tasks.map((task) => {
                         if (task.id === id) return data;
@@ -104,7 +99,6 @@ export const useTakStore = create<State>()(
                     return showErrorToast({ title:"Fallo al actualizar la tarea" });
                 }
             },
-
 
             filterTask(status, query) {
                 const tasks = get().tasks;
