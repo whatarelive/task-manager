@@ -4,6 +4,7 @@ import z from "zod";
 import { signIn } from "@/auth.config";
 import type { StateForm } from "@/interfaces/data.interfaces";
 
+// Esquema de validación para el formulario de inicio de sesión del usuario.
 const LoginSchema = z.object({
     username: z.string().min(5).max(50),
     password: z.string().min(5).max(25).regex(/^[a-zA-Z0-9]+$/),

@@ -3,7 +3,7 @@
 import z from "zod";
 import { todoApi } from "@/lib/api/todo-api";
 import type { StateForm } from "@/interfaces/data.interfaces";
-import type { UserRegister } from "@/interfaces/auth.interfaces";
+import type { UserRegisterRequest, UserRegisterResponse } from "@/interfaces/auth.interfaces";
 
 
 // Esquema de validación para el formulario de registro del usuario.
@@ -34,12 +34,12 @@ export async function createUser(formData: FormData): Promise<StateForm> {
 
     try {
         // Se guarda el usuario en la Base de Datos
-        const { data } = await todoApi.post<UserRegister, UserRegister>(
+        const { data } = await todoApi.post<UserRegisterResponse, UserRegisterRequest>(
             "/user/register/", 
             { ...validated.data }
         );
 
-        if (!data) throw new Error("API_Error");
+        if (!data.email || data.username) throw new Error("API_Error");
 
         return { 
             result: true,

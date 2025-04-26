@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { todoApi } from "@/lib/api/todo-api";
-import type { UserLogin, LoginPost, RequestToken, ResponseToken } from "@/interfaces/auth.interfaces";
+import type { UserLoginRequest, UserLoginResponse, RequestToken, ResponseToken } from "@/interfaces/auth.interfaces";
 
 
 // Declaración de la configuración de autentificación
@@ -32,8 +32,7 @@ export const authConfig: NextAuthConfig = {
             if (user) {
                 token.email = user.email,
                 token.username = user.username,
-                token.first_name = user.first_name,
-                token.last_name = user.last_name,
+                token.full_name = user.full_name,
                 token.accessToken = user.accessToken;
                 token.refreshToken = user.refreshToken;
                 token.accessTokenExpires = Date.now() + 60 * 59 * 1000; // 59 minutos de vida
@@ -87,8 +86,7 @@ export const authConfig: NextAuthConfig = {
               // Agrega la información del usuario a la sesión
               session.user.username = token.username;
               session.user.email = token.email!;
-              session.user.first_name = token.first_name;
-              session.user.last_name = token.last_name;
+              session.user.full_name = token.full_name;
 
               // Se establece el estado de la autentificación
               session.isAuthenticated = session.accessToken ? true : false;
@@ -106,24 +104,22 @@ export const authConfig: NextAuthConfig = {
                 if (!credentials) return null;
 
                 // Convertir credentials a tipo User de forma segura
-                const user = credentials as unknown as UserLogin;
+                const user = credentials as unknown as UserLoginRequest;
 
                 // Si es un intento de login, hacer la petición al endpoint de login
-                const { data } = await todoApi.post<LoginPost, UserLogin>('/user/login/', { ...user });
+                const { data } = await todoApi.post<UserLoginResponse, UserLoginRequest>('/user/login/', { ...user });
 
                 // Si no hay datos en la respuesta, retornar null
                 if (!data) return null;
                 
                 // Retornar los datos del usuario y sus tokens de acceso
                 return {
-                    username: user.username,
-                    email: "email@gmail.com",
-                    first_name: "first_name",
-                    last_name: "last_name",
                     accessToken: data.access,
-                    refreshToken: data.refresh
+                    refreshToken: data.refresh,
+                    email: data.user.email,
+                    full_name: data.user.full_name,
+                    username: data.user.username,
                 }
-                
             }
         })
     ]

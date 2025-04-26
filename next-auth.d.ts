@@ -5,8 +5,7 @@ import "next-auth/jwt";
 interface UserInfo {
     username?: string;
     email?: string;
-    first_name?: string;
-    last_name?: string;
+    full_name?: string;
 }
 
 /**

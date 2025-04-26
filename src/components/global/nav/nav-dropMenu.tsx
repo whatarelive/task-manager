@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { memo, useCallback, type FC } from "react";
 import { ClipboardCheck, LogOut, SquareChartGantt, UserPen } from "lucide-react";
-import { logout } from "@/actions/auth/logout";
+import { logout } from "@/actions/logout";
 import { Avatar } from "@/components/ui/avatar";
 import { showSuccessToast, showErrorToast } from "@/components/ui/sonner";
 
