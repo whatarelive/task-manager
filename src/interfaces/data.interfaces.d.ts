@@ -1,4 +1,5 @@
 import type { LucideProps } from "lucide-react";
+import { number, string } from "zod";
 
 export interface FeatureDetail {
     readonly title: string;
@@ -26,4 +27,14 @@ export interface Tag {
     id: number;
     name: string;
     color: string;
+}
+
+// Tipo de dato del objeto que define la tarea
+export interface Task {
+    id: number;
+    title:	string
+    status: string;
+    create_at: string;
+    final_at: string;
+    tags: Tag[];
 }
