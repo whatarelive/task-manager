@@ -3,7 +3,6 @@
 import z from "zod";
 import todoApi from "@/lib/api/todo-api";
 import type { Tag } from "@/interfaces/data.interfaces";
-import { error } from "console";
 
 
 // Esquema de validación para el formulario de creación de etiquetas.
@@ -17,7 +16,7 @@ const CreateTagSchema = z.object({
 export async function createTag(formData: FormData) {
     // Convertir el FormData a un objeto plano para poder validarlo
     const fields = Object.fromEntries(formData.entries());
-    
+
     // Validar los datos usando Zod schema para asegurar que cumplen con el formato requerido
     const validated = await CreateTagSchema.safeParseAsync(fields);
     

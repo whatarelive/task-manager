@@ -1,6 +1,6 @@
 import { ToolsBar } from "@/components/dashboard/tasks/ToolsBar";
 import { TasksList } from "@/components/dashboard/tasks/TasksList";
-import { TagsCard } from "@/components/dashboard/tasks/TagsCard";
+import { TagsCard } from "@/components/dashboard/tag/TagsCard";
 import { SummaryCard } from "@/components/dashboard/tasks/SummaryCard";
 
 export default function Dashboard() {

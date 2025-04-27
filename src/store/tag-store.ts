@@ -11,7 +11,7 @@ interface State {
     tags: Tag[] | null;
     isLoading: boolean;
     getTags: () => Promise<void>;
-    addTag: (tag: Tag) => Promise<void>;
+    addTag: (tag: Tag) => Promise<any >;
     removeTag: (id: number) => Promise<void>;
     clearTags: () => void;
 }
@@ -44,21 +44,14 @@ export const useTagStore = create<State>()(
 
             // Método para agregar nuevas etiquetas
             async addTag(tag) {
-                // Se cambia el estado de carga
-                set({ isLoading: true });
-                
                 // Si la información es recibida se actualiza el estado 
                 set(({ tags }) => ({ 
-                    tags:  tags ? [...tags, tag ] : [tag],
-                    isLoading: false
+                    tags:  tags ? [tag, ...tags] : [tag],
                 }));
             },
 
             // Método para eliminar una etiqueta
             async removeTag(id) {
-                // Se cambia el estado de carga
-                set({ isLoading: true });
-                
                 // Se realiza la petición de eliminación a la API
                 const { data, error } = await removeTag(id);
                 
@@ -73,9 +66,6 @@ export const useTagStore = create<State>()(
                 
                 // Se muestra mensaje de error en caso de que falle la petición
                 else showErrorToast({ title: "Fallo la eliminación de la etiqueta" });
-                
-                // Se cambia el estado de carga
-                set({ isLoading: false });
             },
 
             // Método para limpiar el estado cuando se realiza el cierre de sesión
