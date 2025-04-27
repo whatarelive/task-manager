@@ -12,7 +12,7 @@ const { auth: middleware } = NextAuth(authConfig);
 // Exporta el middleware con la lógica de protección de rutas.
 export default middleware( async({ nextUrl, auth }) => {
     // Verifica si el usuario está autenticado.
-    const isLoggedIn = !!auth;      
+    const isLoggedIn = auth?.isAuthenticated;
 
     // Protección de rutas privadas.
     if (!publicRoutes.includes(nextUrl.pathname) && !isLoggedIn) {

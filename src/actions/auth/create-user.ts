@@ -1,16 +1,18 @@
 "use server";
 
 import z from "zod";
-import prisma from "@/lib/prisma";
-import bcryptjs from "bcryptjs";
+import todoApi from "@/lib/api/todo-api";
 import type { StateForm } from "@/interfaces/data.interfaces";
+import type { UserRegisterResponse } from "@/interfaces/auth.interfaces";
 
 
 // Esquema de validación para el formulario de registro del usuario.
 const RegisterSchema = z.object({
     username: z.string().min(5).max(50),
-    email: z.string().email().max(120),
-    password: z.string().min(5).max(16).regex(/^[a-zA-Z0-9]+$/),
+    email: z.string().email().max(254),
+    first_name: z.string().min(3).max(50),
+    last_name: z.string().min(3).max(50),
+    password: z.string().min(5).max(25).regex(/^[a-zA-Z0-9]+$/),
 });
 
 
@@ -20,10 +22,10 @@ export async function createUser(formData: FormData): Promise<StateForm> {
     const fields = Object.fromEntries(formData.entries());
     
     // Validar los datos usando Zod schema para asegurar que cumplen con el formato requerido
-    const { success, data } = await RegisterSchema.safeParseAsync(fields);
+    const validated = await RegisterSchema.safeParseAsync(fields);
 
     // Si la validación falla, retornar los errores específicos de cada campo
-    if (!success) {
+    if (!validated.success) {
         return {
             result: false,
             message: "Credenciales incorrectas",
@@ -31,21 +33,16 @@ export async function createUser(formData: FormData): Promise<StateForm> {
     }
 
     try {
-        // Encriptación de la contraseña
-        const passwordHash = bcryptjs.hashSync(data.password);
-
         // Se guarda el usuario en la Base de Datos
-        await prisma.user.create({
-            data: {
-                email: data.email.toLowerCase(),
-                username: data.username,
-                password: passwordHash
-            }
-        });
+        const { data } = await todoApi.post<UserRegisterResponse>(
+            "/user/register/", 
+            { ...validated.data },
+        );
 
+        // Se notifica el registro a la UI
         return { 
             result: true,
-            message: "Usuario registrado"
+            message: `Usuario ${data.username} registrado`
         };
 
     } catch (error) {

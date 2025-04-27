@@ -8,7 +8,7 @@ import { createUser } from "@/actions/auth/create-user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { showSuccessToast, showErrorToast } from "@/components/ui/sonner";
+import { showSuccessToast, showErrorToast, showInfoToast } from "@/components/ui/sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { StateForm } from "@/interfaces/data.interfaces";
 
@@ -20,7 +20,13 @@ async function submitForm(_prevState: StateForm | null, formData: FormData) {
     
     // Manejo de la respuesta
     if (result) {
-        showSuccessToast({ title: message }) 
+        showSuccessToast({ title: message });
+        
+        showInfoToast({ 
+            title: "Notificación de Acceso", 
+            description: "Para acceder a sus datos inicie sesión" 
+        });
+
         redirect("/auth/login");
     }
     else showErrorToast({ title: message });
@@ -50,15 +56,37 @@ export default function RegisterPage() {
                 <form action={formAction} className="space-y-4">
                     <CardContent>
                         <div className="space-y-2 mb-4">
-                            <Label htmlFor="username" className="text-sm font-medium">
+                            <Label htmlFor="first_name" className="text-sm font-medium">
                                 Nombre
+                            </Label>
+                            <Input
+                                id="first_name"
+                                name="first_name"
+                                placeholder="Juan Luis"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2 mb-4">
+                            <Label htmlFor="last_name" className="text-sm font-medium">
+                                Apellidos
+                            </Label>
+                            <Input
+                                id="last_name"
+                                name="last_name"
+                                placeholder="Martínez Lopez"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2 mb-4">
+                            <Label htmlFor="username" className="text-sm font-medium">
+                                Usuario
                             </Label>
                             <div className="relative">
                                 <User className="absolute left-3 top-2 h-5 w-5 text-muted-foreground"/>
                                 <Input
                                     id="username"
                                     name="username"
-                                    placeholder="Juan Pérez"
+                                    placeholder="juanluis"
                                     className="pl-10"
                                     required
                                 />

@@ -13,7 +13,7 @@ export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
     // Hook de Next js para obtener el path de la ruta del lado del cliente.
     const pathName = usePathname();
     // Hook de Next js para realizar la navegación del lado del cliente.
-    const { push, refresh, replace } = useRouter();
+    const { push, refresh } = useRouter();
 
     // Función de manejo del cierre de sesión.
     const handleClick = useCallback(
@@ -22,16 +22,12 @@ export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
             const { result, message } = await logout(); 
    
             // Manejo de la respuesta.
-            if (result) {
-                showSuccessToast({ title: message }); 
-            } else {
-                return showErrorToast({ title: message });
-            }
+            if (result) showSuccessToast({ title: message }); 
+            else return showErrorToast({ title: message });
    
            // Se realiza una forma de actualización diferente dependiendo en que ruta
            // se encuentre el usuario en ese momento.
            if (pathName === "/") refresh();
-           else replace("/");
         },
         [username],
     )
