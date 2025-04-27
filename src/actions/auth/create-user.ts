@@ -36,11 +36,10 @@ export async function createUser(formData: FormData): Promise<StateForm> {
         // Se guarda el usuario en la Base de Datos
         const { data } = await todoApi.post<UserRegisterResponse>(
             "/user/register/", 
-            { ...validated.data }
+            { ...validated.data },
         );
 
-        if (!data.email || data.username) throw new Error("API_Error");
-
+        // Se notifica el registro a la UI
         return { 
             result: true,
             message: `Usuario ${data.username} registrado`

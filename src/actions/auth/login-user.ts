@@ -4,6 +4,7 @@ import z from "zod";
 import { signIn } from "@/auth.config";
 import type { StateForm } from "@/interfaces/data.interfaces";
 
+
 // Esquema de validación para el formulario de inicio de sesión del usuario.
 const LoginSchema = z.object({
     username: z.string().min(5).max(50),
@@ -29,18 +30,21 @@ export async function login(formData: FormData): Promise<StateForm> {
  
     try {
         // Se realiza el login a través de API de NextAuth.
-        await signIn('credentials', { ...validated.data, redirect: false })
+        await signIn('credentials', { ...validated.data, redirect: false });
 
-        return { 
+        // Se notifica el inicio de sesión a la UI
+        return {
             result: true,
             message: "Inicio de sesión exitoso",
         };
 
     } catch (error) {
+        console.log(error);
+        
         // Si falla el registro en la Base de Datos se notifica a la UI.
         return {
             result: false,
             message: "Credenciales incorrectas",
-        }
+        };
     }    
 }

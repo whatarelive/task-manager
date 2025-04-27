@@ -19,7 +19,7 @@ export const TasksList = () => {
     );
 
     useEffect(() => {
-        getTaks();
+        // getTaks();
     }, []);
 
     return (

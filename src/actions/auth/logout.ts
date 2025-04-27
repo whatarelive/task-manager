@@ -22,8 +22,7 @@ export async function logout(): Promise<StateForm> {
             // url de la request 
             "/user/logout/", 
             // data de la request
-            { refresh: session?.refreshToken },
-            // token de acceso para pasar la seguridad
+            { refresh: session?.refreshToken }
         );
 
         // Se cierra la sesión en el servidor del frontend

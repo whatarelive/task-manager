@@ -4,7 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useActionState } from "react";
 import { Mail, User, Lock } from "lucide-react";
-import { createUser } from "@/actions/create-user";
+import { createUser } from "@/actions/auth/create-user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
