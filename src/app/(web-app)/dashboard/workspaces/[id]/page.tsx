@@ -10,7 +10,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar } from "@/components/ui/avatar"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -381,7 +381,7 @@ export default function WorkspaceInfoPage() {
                 </CardFooter>
               </Card>
 
-              <Tabs defaultValue="all" className="mt-6">
+              {/* <Tabs defaultValue="all" className="mt-6">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="all">Todas</TabsTrigger>
                   <TabsTrigger value="pending">Pendientes</TabsTrigger>
@@ -442,7 +442,7 @@ export default function WorkspaceInfoPage() {
                     )}
                   </TabsContent>
                 ))}
-              </Tabs>
+              </Tabs> */}
             </div>
 
             <div>

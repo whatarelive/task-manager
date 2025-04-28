@@ -10,7 +10,7 @@ import type { WorkSpaceGet } from "@/interfaces/data.interfaces";
  */
 export async function getWorkSpaces(query: string) {
     // Construye la URL basada en si hay un parámetro de búsqueda
-    const url = query ? `/todo/workspaces?search=${query}` : "/todo/workspaces/";
+    const url = query.length >= 1 ? `/todo/workspaces?search=${query}` : "/todo/workspaces/";
 
     try {
         // Realiza la petición GET a la API

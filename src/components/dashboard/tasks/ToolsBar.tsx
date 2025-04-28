@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTagStore } from "@/store/tag-store";
-import { SearchTask } from "@/components/dashboard/tasks/SearchTask";
+import { InputSearch } from "@/components/global/InputSearch";
 import { CreateTaskModal } from "@/components/dashboard/tasks/CreateTaskModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -32,7 +32,7 @@ export const ToolsBar = () => {
             <h1 className="text-3xl font-bold">Mis Tareas</h1>
 
             <div className="flex w-full flex-col gap-4 md:w-auto md:flex-row">
-                <SearchTask/>
+                <InputSearch label="Buscar tareas"/>
 
                 <Select value={selectedTag} onValueChange={setSelectedTag}>
                     <SelectTrigger className="w-full md:w-44">

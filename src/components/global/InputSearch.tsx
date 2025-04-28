@@ -1,12 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 
-export const SearchTask = () => {
+export const InputSearch: FC<{ label: string }> = ({ label }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -39,11 +39,11 @@ export const SearchTask = () => {
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
                 type="search"
-                placeholder="Buscar tareas..."
+                placeholder={`${label}...`}
                 className="pl-8"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                aria-label="Buscar tareas"
+                aria-label={label}
             />
         </div>
     )
