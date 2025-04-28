@@ -18,7 +18,7 @@ export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
     const { push, refresh } = useRouter();
 
     const clearTags = useTagStore((state) => state.clearTags);
-    const clearTask = useTaskStore((state) => state.clearTask);
+    const clearTask = useTaskStore((state) => state.clearStore);
 
     // Función de manejo del cierre de sesión.
     const handleClick = useCallback(
@@ -60,17 +60,13 @@ export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
                 <DropdownMenu.Separator />
 
                 <DropdownMenu.Group>
-                    <DropdownMenu.Item onClick={() => push("/dashboard")} className="flex md:hidden">
+                    <DropdownMenu.Item onClick={() => push("/dashboard?tab=all")} className="flex md:hidden">
                         <ClipboardCheck className="w-6 h-6"/>
                         Tareas
                     </DropdownMenu.Item>
                     <DropdownMenu.Item onClick={() => push("/dashboard/workspaces")} className="flex md:hidden">
                         <SquareChartGantt className="w-6 h-6"/>
                         Espacios
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item>
-                        <UserPen className="w-6 h-6"/>
-                        Perfil
                     </DropdownMenu.Item>
                 </DropdownMenu.Group>
                 

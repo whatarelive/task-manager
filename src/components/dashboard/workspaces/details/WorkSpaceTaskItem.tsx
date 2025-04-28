@@ -58,7 +58,7 @@ export const WorkSpaceTaskItem: FC<Props> = ({ task, members, isAdmin, updateTas
             {
                 isAdmin && (
                     <div className="flex gap-2">
-                        { !task.assigned_to && <WorkSpaceAssignModal members={members}/> }
+                        { !task.assigned_to && <WorkSpaceAssignModal taskId={task.id} members={members}/> }
 
                         <Button variant="destructive" size="icon" onClick={deleteTask}>
                             <Trash2 className="w-6 h-6"/>

@@ -2,16 +2,33 @@
 
 import { useActionState, type FC } from "react";
 import { Users } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { assingWorkSpaceTask } from "@/actions/workspaces/workspace-asing-task";
+import { showErrorToast, showSuccessToast } from "@/components/ui/sonner";
 
 interface Props {
+    taskId: number;
     members: string[];
 }
-export const WorkSpaceAssignModal: FC<Props> = ({ members }) => {
-    const [_state, formAction, isPending] = useActionState(() => {}, null);
+export const WorkSpaceAssignModal: FC<Props> = ({ taskId, members }) => {
+    const router = useRouter();
+
+    const [_state, formAction, isPending] = useActionState(
+        async(_prev: null | void, formData: FormData) => {
+            const { error } = await assingWorkSpaceTask(taskId.toString(), formData);
+
+            if (!error) {
+                showSuccessToast({ title: "Miembro asignado a la tarea" });
+                router.refresh();
+            }
+            else showErrorToast({ title: "Fallo la asignación" });
+        }, 
+        null
+    );
     
     return (
         <Dialog>
