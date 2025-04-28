@@ -8,7 +8,7 @@ import { TagsCard } from "@/components/dashboard/workspaces/details/WorksSpaceTa
 import { ToolsBar } from "@/components/dashboard/workspaces/details/WorkSpaceToolsBar";
 import { MembersCard } from "@/components/dashboard/workspaces/details/MembersCard";
 import { TagsCardSkeleton } from "@/components/dashboard/tag/TagsCardSkeleton";
-import { TasksList } from "@/components/dashboard/workspaces/details/WorkSpaceTasksList";
+import { WorkSpaceTasksList } from "@/components/dashboard/workspaces/details/WorkSpaceTasksList";
 import { TasksListSkeleton } from "@/components/dashboard/tasks/TasksListSkeleton";
 
 interface Props {
@@ -34,9 +34,10 @@ export default async function WorkspaceInfoPage({ params }: Props) {
 
             <div className="flex flex-col lg:flex-row gap-6 w-full justify-between">
                 <Suspense fallback={<TasksListSkeleton/>}>
-                    <TasksList 
+                    <WorkSpaceTasksList 
                         isAdmin={isAdminUser} 
                         workSpaceId={id} 
+                        members={data.members}
                         getTasks={getWorkSpacesTasks(id)}
                     />
                 </Suspense>

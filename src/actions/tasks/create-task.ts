@@ -19,7 +19,7 @@ type Data = {
 }
 
 // Acción de servidor para la creación de tareas de los usuarios en la plataforma.
-export async function createTask(fields: Data) {
+export async function createTask(fields: Data, workSpaceId: string | null) {
     // Validar los datos usando Zod schema para asegurar que cumplen con el formato requerido
     const validated = await CreateTaskSchema.safeParseAsync(fields);
     
@@ -31,9 +31,11 @@ export async function createTask(fields: Data) {
         }
     }
  
+    const url = workSpaceId ? `/todo/workspaces/${workSpaceId}/tasks/` : "/todo/user/tasks/"
+
     try {
         // Se realiza la petición POST al backend para guardar la etiqueta
-        const { data } = await todoApi.post<Task>("/todo/user/tasks/", { ...validated.data });
+        const { data } = await todoApi.post<Task>(url, { ...validated.data });
         
         // Se notifica a la UI del registro exitoso de la etiqueta
         return {

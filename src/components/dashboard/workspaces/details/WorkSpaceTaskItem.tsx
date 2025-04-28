@@ -3,26 +3,29 @@
 import type { FC } from "react";
 import { es } from "date-fns/locale/es";
 import { format } from "date-fns/format";
-import { CalendarIcon, Trash2 } from "lucide-react";
+import { CalendarIcon, Trash2, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { WorkSpaceAssignModal } from "@/components/dashboard/workspaces/details/WorkSpaceAssignModal";
 import type { Task } from "@/interfaces/data.interfaces";
 
 interface Props {
-    task: Task;
+    task: Task & { assigned_to?: string };
+    members: string[];
+    isAdmin: boolean;
     updateTask: () => void;
     deleteTask: () => void;
 }
 
-export const TaskItem: FC<Props> = ({ task, updateTask, deleteTask }) => {
+export const WorkSpaceTaskItem: FC<Props> = ({ task, members, isAdmin, updateTask, deleteTask }) => {
     return (
         <li className={`flex items-center justify-between rounded-lg border p-4 ${task.status === "completed" ? "bg-muted" : ""}`}>
             <div className="flex items-start gap-3">
                 {
                     task.status === "completed" 
                         ? <Checkbox checked className="mt-1"/>
-                        : <Checkbox onCheckedChange={updateTask} className="mt-1"/>
+                        : task.assigned_to && <Checkbox onCheckedChange={updateTask} className="mt-1"/> 
                 }
 
                 <div>
@@ -41,13 +44,28 @@ export const TaskItem: FC<Props> = ({ task, updateTask, deleteTask }) => {
                                 {tag.name}
                             </Badge>
                         ))}
+
+                        {task.assigned_to  && (
+                            <Badge variant="secondary" className="flex items-center gap-1">
+                                <User className="h-3 w-3" />
+                                {task.assigned_to}
+                            </Badge>
+                        )}
                     </div>
                 </div>
             </div>
+            
+            {
+                isAdmin && (
+                    <div className="flex gap-2">
+                        { !task.assigned_to && <WorkSpaceAssignModal members={members}/> }
 
-            <Button variant="destructive" size="icon" onClick={deleteTask}>
-                <Trash2 className="w-6 h-6"/>
-            </Button>
+                        <Button variant="destructive" size="icon" onClick={deleteTask}>
+                            <Trash2 className="w-6 h-6"/>
+                        </Button>
+                    </div>
+                )
+            }
         </li>
     )
 }

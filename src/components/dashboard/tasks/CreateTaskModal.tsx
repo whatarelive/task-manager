@@ -11,9 +11,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 export const CreateTaskModal = () => {
     // Arreglo de etiquetas del usuario
-    const tags = useTagStore((state) => state.tags);
+    const { tags, workSpaceId } = useTagStore();
     // Custom hook para manejar la obtención de datos de los campos del modal
-    const { isPending, formAction, handleAddTag, handleDateSelect } = useTaskModal(tags);
+    const { isPending, formAction, handleAddTag, handleDateSelect } = useTaskModal(tags, workSpaceId);
 
     return (
         <Dialog>

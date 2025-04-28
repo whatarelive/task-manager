@@ -4,7 +4,7 @@ import { useEffect, useState, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTagStore } from "@/store/tag-store";
 import { InputSearch } from "@/components/global/InputSearch";
-import { CreateMemberTaskModal } from "@/components/dashboard/workspaces/details/WorkSpaceCreateTaskModal";
+import { CreateTaskModal } from "@/components/dashboard/tasks/CreateTaskModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Props {
@@ -78,7 +78,7 @@ export const ToolsBar: FC<Props> = ({ isAdmin, members, workSpaceName }) => {
                 </Select>
                 
                 {/* Modal para crear una nueva tarea */}
-                { isAdmin && <CreateMemberTaskModal members={members}/> }
+                { isAdmin && <CreateTaskModal /> }
             </div>
         </div>
     )

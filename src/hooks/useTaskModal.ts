@@ -6,7 +6,7 @@ import { createTask } from "@/actions/tasks/create-task";
 import { showErrorToast, showInfoToast, showSuccessToast } from "@/components/ui/sonner";
 import type { Tag } from "@/interfaces/data.interfaces";
 
-export function useTaskModal(tags: Tag[]) {
+export function useTaskModal(tags: Tag[], workSpaceId: string | null) {
     const router = useRouter();
     // Referencia de los ids de las etiquetas
     const tagsRef = useRef<number[]>([]);
@@ -22,7 +22,7 @@ export function useTaskModal(tags: Tag[]) {
             const final_at = dateRef.current;
             
             // Llamar a la acción del servidor
-            const { message, data, error } = await createTask({ title, final_at, tags });
+            const { message, data, error } = await createTask({ title, final_at, tags }, workSpaceId);
             
             // Manejar el resultado
             if (!error && data) {
