@@ -1,9 +1,11 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { memo, useCallback, type FC } from "react";
 import { ClipboardCheck, LogOut, SquareChartGantt, UserPen } from "lucide-react";
 import { logout } from "@/actions/auth/logout";
+import { useTagStore } from "@/store/tag-store";
+import { useTaskStore } from "@/store/task-store";
 import { Avatar } from "@/components/ui/avatar";
 import { showSuccessToast, showErrorToast } from "@/components/ui/sonner";
 
@@ -15,6 +17,9 @@ export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
     // Hook de Next js para realizar la navegación del lado del cliente.
     const { push, refresh } = useRouter();
 
+    const clearTags = useTagStore((state) => state.clearTags);
+    const clearTask = useTaskStore((state) => state.clearTask);
+
     // Función de manejo del cierre de sesión.
     const handleClick = useCallback(
         async() => {
@@ -22,12 +27,17 @@ export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
             const { result, message } = await logout(); 
    
             // Manejo de la respuesta.
-            if (result) showSuccessToast({ title: message }); 
+            if (result) {
+                clearTags();
+                clearTask();
+                showSuccessToast({ title: message }); 
+            }
             else return showErrorToast({ title: message });
    
-           // Se realiza una forma de actualización diferente dependiendo en que ruta
-           // se encuentre el usuario en ese momento.
-           if (pathName === "/") refresh();
+            // Se realiza una forma de actualización diferente dependiendo en que ruta
+            // se encuentre el usuario en ese momento.
+            if (pathName !== "/") redirect("/");
+            else refresh();
         },
         [username],
     )

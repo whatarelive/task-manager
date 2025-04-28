@@ -21,7 +21,7 @@ async function submitForm(_prevState: StateForm | null, formData: FormData) {
     // Manejo de la respuesta
     if (result) {
         showSuccessToast({ title: message });
-        redirect("/dashboard");
+        redirect("/dashboard?tab=all");
     }
     
     else showErrorToast({ title: message });

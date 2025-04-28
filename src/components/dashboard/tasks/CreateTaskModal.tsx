@@ -1,49 +1,115 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { type FC, useRef, useActionState, useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { CalendarIcon, Plus } from 'lucide-react';
+import { createTask } from "@/actions/tasks/create-task";
 import { useTagStore } from "@/store/tag-store";
-import { CalendarIcon, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { showErrorToast, showInfoToast, showSuccessToast } from "@/components/ui/sonner";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import type { Tag } from "@/interfaces/data.interfaces";
-import { createTask } from "@/actions/tasks/create-task";
-import { useTakStore } from "@/store/task-store";
-import { showErrorToast, showSuccessToast } from "@/components/ui/sonner";
+
+
+export const CalendarModal: FC<{ dateRef: (date?: Date) => void }> = ({ dateRef }) => {
+    const [date, setDate] = useState<Date>();
+
+    const handleClick = (date?: Date) => {
+        setDate(date);
+        dateRef(date);
+    }
+
+    return (
+        <div className="grow">
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-left font-normal">
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        { 
+                            date 
+                                ? format(date, "PPP", { locale: es }) 
+                                : <span>Fecha límite</span>
+                        }
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                    <Calendar 
+                        mode="single" 
+                        selected={date} 
+                        onSelect={handleClick} 
+                        initialFocus 
+                    />
+                </PopoverContent>
+            </Popover>
+        </div>
+    )
+}
+
 
 export const CreateTaskModal = () => {
+    const router = useRouter();
+    // Referencia de los ids de las etiquetas
+    const tagsRef = useRef<number[]>([]);
+    // Referencia del valor del calendario
+    const dateRef = useRef<Date | undefined>(undefined);
+    // Arreglo de etiquetas del usuario
     const tags = useTagStore((state) => state.tags);
-    const addTask = useTakStore((state) => state.addTask);
-
-    const [tag, setTags] = useState<number[]>([]);
-    const [title, setTitle] = useState<string>("");
-    const [selectedTag, setSelectedTag] = useState<string>();
-    const [selectedDate, setSelectedDate] = useState<Date>();
-
-    const handleClick = () => {
-        const id = Number(selectedTag);
-        if (tag.includes(id)) return;
-        setTags([...tag, id]);
-    }
-
-    const handleSubmit = async () => {
-        const { data, error, message } = await createTask({ title, final_at: selectedDate, tags: tag });
     
-        console.log({ data });
+    // Hook para manejar el estado del formulario
+    const [_state, formAction, isPending] = useActionState(
+        async (_prev: null | void, formData: FormData) => {
+            // Obtener los datos del formulario
+            const title = formData.get('title') as string;
+            const tags = tagsRef.current;
+            const final_at = dateRef.current;
+            
+            // Llamar a la acción del servidor
+            const { message, data, error } = await createTask({ title, final_at, tags });
+            
+            // Manejar el resultado
+            if (!error && data) {
+                // Mensaje de confirmación
+                showSuccessToast({ title: message });
+                
+                // Limpiar los refs
+                tagsRef.current = [];
+                dateRef.current = undefined;
+
+                router.refresh();
+            } 
+
+            // Mensaje de error si falla la acción
+            else showErrorToast({ title: message });
+        }, 
+        null
+    );
+
+    // Función auxiliar para agregar las etiquetas a la referencia 
+    const handleAddTag = () => {
+        // Se recupera el elemento seleccionado en el elemento select. 
+        const selectElement = document.querySelector('select[name="tag"]') as HTMLSelectElement;
         
+        if (!selectElement) return;
+        
+        // Evaluación del valor recuperado
+        const id = Number(selectElement.value);
+        if (isNaN(id) || id === 0 || tagsRef.current.includes(id)) return;
+        
+        // Se actualiza los datos de la referencia
+        tagsRef.current = [...tagsRef.current, id];
 
-        if (!error && data) {
-            addTask(data);
-            showSuccessToast({ title: message });
-        }
+        // Confirmación visual para mostrar las etiquetas seleccionadas
+        const tag = tags.find((tag) => tag.id === id);
+        showInfoToast({ title: `Etiqueta ${tag?.name} agregada`});
+    };
 
-        else showErrorToast({ title: message });
-    }
+    // Función auxiliar para 
+    const handleDateSelect = (date: Date | undefined) => dateRef.current = date;
 
     return (
         <Dialog>
@@ -62,25 +128,25 @@ export const CreateTaskModal = () => {
                     </DialogDescription>
                 </DialogHeader>
                 
-                <div className="grid gap-4 py-4">
+                <form action={formAction} className="grid gap-4 py-4">
                     <div className="flex flex-col items-start gap-2">
                         <Input 
-                            id="name" 
+                            id="title" 
+                            name="title"
                             placeholder="Que necesitas hacer..." 
-                            className="col-span-3" 
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            className="col-span-3"
+                            required
                         />
                     </div>
                     
                     <div className="flex flex-col gap-4 sm:flex-row">
                         <div className="grow">
-                            <Select value={selectedTag} onValueChange={setSelectedTag}>
+                            <Select name="tag">
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Seleccionar etiqueta" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="none">Sin etiqueta</SelectItem>
+                                    <SelectItem value="0">Sin etiqueta</SelectItem>
                                     {tags?.map((tag) => (
                                         <SelectItem key={tag.id} value={tag.id.toString()}>
                                             <div className="flex items-center gap-2">
@@ -93,38 +159,20 @@ export const CreateTaskModal = () => {
                             </Select>
                         </div>
 
-                        <Button type="button" onClick={handleClick}>
+                        <Button type="button" onClick={handleAddTag}>
                             Agregar
                         </Button>
                     </div>
 
-                    <div className="grow">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    { selectedDate ? format(selectedDate, "PPP", { locale: es }) : <span>Fecha límite</span> }
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                                <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus />
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                </div>
+                    <CalendarModal dateRef={handleDateSelect}/>
 
-                <DialogFooter>
-                    <Button 
-                        type="button" 
-                        onClick={async (e) => { 
-                            e.preventDefault();
-                            await handleSubmit();
-                        }}
-                    >
-                        Guardar Tarea
-                    </Button>
-                </DialogFooter>
+                    <DialogFooter>
+                        <Button type="submit" disabled={isPending}>
+                            { isPending ? "Guardando..." : "Guardar Tarea" }
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
-    )
-}
+    );
+};

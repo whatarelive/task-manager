@@ -1,12 +1,12 @@
 "use client"
 
-import { useTakStore } from "@/store/task-store";
+import { useTaskStore } from "@/store/task-store";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { SummaryCardSkeleton } from "@/components/dashboard/tasks/SummaryCardSkeleton";
 
 export const SummaryCard = () => {
-    const { tasks, pendings, complete, isLoading } = useTakStore();
+    const { pendings, completeds, isLoading } = useTaskStore();
 
     if (isLoading) return <SummaryCardSkeleton/>;
 
@@ -19,11 +19,11 @@ export const SummaryCard = () => {
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <span>Total de tareas</span>
-                        <Badge variant="outline">{tasks?.length || 0}</Badge>
+                        <Badge variant="outline">{completeds + pendings}</Badge>
                     </div>
                     <div className="flex items-center justify-between">
                         <span>Completadas</span>
-                        <Badge variant="outline">{complete}</Badge>
+                        <Badge variant="outline">{completeds}</Badge>
                     </div>
                     <div className="flex items-center justify-between">
                         <span>Pendientes</span>

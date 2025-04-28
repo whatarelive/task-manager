@@ -1,7 +1,7 @@
 "use server";
 
 import { isAxiosError } from "axios";
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth.config";
 import todoApi from "@/lib/api/todo-api";
 import type { StateForm } from "@/interfaces/data.interfaces";
@@ -45,19 +45,18 @@ export async function logout(): Promise<StateForm> {
         if (error.response?.status === 401) {
             // Se cierra la sesión de lado del servidor del frontend
             await signOut({ redirect: false });
-            // Se
             isclose = true;
-        } 
-
-        // Mensaje de error si hay un fallo en la petición (statusCode !== 401)
-        return {
-            result: false,
-            message: "Error de conexión",
+        } else {
+            // Mensaje de error si hay un fallo en la petición (statusCode !== 401)
+            return {
+                result: false,
+                message: "Error de conexión",
+            }
         }
     }
 
     // Se actualiza la información de la página principal
-    if (isclose) revalidatePath("/");
+    if (isclose) redirect("/");
 
     // Mensaje de confirmación de cierre de la sesión
     return {
