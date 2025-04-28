@@ -1,115 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { type FC, useRef, useActionState, useState } from "react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { CalendarIcon, Plus } from 'lucide-react';
-import { createTask } from "@/actions/tasks/create-task";
+import { Plus } from "lucide-react";
 import { useTagStore } from "@/store/tag-store";
+import { useTaskModal } from "@/hooks/useTaskModal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { showErrorToast, showInfoToast, showSuccessToast } from "@/components/ui/sonner";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { CalendarModal } from "@/components/dashboard/tasks/CreateTaskCalendar";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-
-export const CalendarModal: FC<{ dateRef: (date?: Date) => void }> = ({ dateRef }) => {
-    const [date, setDate] = useState<Date>();
-
-    const handleClick = (date?: Date) => {
-        setDate(date);
-        dateRef(date);
-    }
-
-    return (
-        <div className="grow">
-            <Popover>
-                <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-left font-normal">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        { 
-                            date 
-                                ? format(date, "PPP", { locale: es }) 
-                                : <span>Fecha límite</span>
-                        }
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                    <Calendar 
-                        mode="single" 
-                        selected={date} 
-                        onSelect={handleClick} 
-                        initialFocus 
-                    />
-                </PopoverContent>
-            </Popover>
-        </div>
-    )
-}
-
-
 export const CreateTaskModal = () => {
-    const router = useRouter();
-    // Referencia de los ids de las etiquetas
-    const tagsRef = useRef<number[]>([]);
-    // Referencia del valor del calendario
-    const dateRef = useRef<Date | undefined>(undefined);
     // Arreglo de etiquetas del usuario
     const tags = useTagStore((state) => state.tags);
-    
-    // Hook para manejar el estado del formulario
-    const [_state, formAction, isPending] = useActionState(
-        async (_prev: null | void, formData: FormData) => {
-            // Obtener los datos del formulario
-            const title = formData.get('title') as string;
-            const tags = tagsRef.current;
-            const final_at = dateRef.current;
-            
-            // Llamar a la acción del servidor
-            const { message, data, error } = await createTask({ title, final_at, tags });
-            
-            // Manejar el resultado
-            if (!error && data) {
-                // Mensaje de confirmación
-                showSuccessToast({ title: message });
-                
-                // Limpiar los refs
-                tagsRef.current = [];
-                dateRef.current = undefined;
-
-                router.refresh();
-            } 
-
-            // Mensaje de error si falla la acción
-            else showErrorToast({ title: message });
-        }, 
-        null
-    );
-
-    // Función auxiliar para agregar las etiquetas a la referencia 
-    const handleAddTag = () => {
-        // Se recupera el elemento seleccionado en el elemento select. 
-        const selectElement = document.querySelector('select[name="tag"]') as HTMLSelectElement;
-        
-        if (!selectElement) return;
-        
-        // Evaluación del valor recuperado
-        const id = Number(selectElement.value);
-        if (isNaN(id) || id === 0 || tagsRef.current.includes(id)) return;
-        
-        // Se actualiza los datos de la referencia
-        tagsRef.current = [...tagsRef.current, id];
-
-        // Confirmación visual para mostrar las etiquetas seleccionadas
-        const tag = tags.find((tag) => tag.id === id);
-        showInfoToast({ title: `Etiqueta ${tag?.name} agregada`});
-    };
-
-    // Función auxiliar para 
-    const handleDateSelect = (date: Date | undefined) => dateRef.current = date;
+    // Custom hook para manejar la obtención de datos de los campos del modal
+    const { isPending, formAction, handleAddTag, handleDateSelect } = useTaskModal(tags);
 
     return (
         <Dialog>
@@ -164,7 +68,7 @@ export const CreateTaskModal = () => {
                         </Button>
                     </div>
 
-                    <CalendarModal dateRef={handleDateSelect}/>
+                    <CalendarModal updateDate={handleDateSelect}/>
 
                     <DialogFooter>
                         <Button type="submit" disabled={isPending}>
