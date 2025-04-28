@@ -35,6 +35,8 @@ export function useTasks(tasks?: Task[]) {
         // Aplicamos el filtro por tab (estado)
         if (tab && tab !== "all") {
             filteredResults = filteredResults.filter(task => task.status === tab);
+        } else {
+            filteredResults = filteredResults.sort((a, b) => a.status.length - b.status.length);
         }
         
         // Aplicamos el filtro por etiqueta

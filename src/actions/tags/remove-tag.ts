@@ -8,10 +8,10 @@ import type { Tag } from "@/interfaces/data.interfaces";
 export async function removeTag(id: number) {
     try {
         // Se realiza la petición de eliminación a la API
-        const { data } = await todoApi.delete<Tag>(`/${id}`);
+        await todoApi.delete<Tag>(`/todo/user/tags/${id}/delete/`);
         
         // Se devuelve un objeto con la data dentro.
-        return { data };
+        return { error: false };
     
     } catch (error) {
         console.log(error);

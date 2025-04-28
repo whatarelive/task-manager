@@ -2,6 +2,8 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { removeTag } from "@/actions/tags/remove-tag";
+import { showErrorToast, showSuccessToast } from "@/components/ui/sonner";
 import type { Tag } from "@/interfaces/data.interfaces";
 
 // Interfaz que define la estructura del estado y sus acciones
@@ -9,7 +11,7 @@ interface State {
     tags: Tag[];                           // Array de etiquetas
     setTags: (tags: Tag[]) => void;        // Actualiza todas las etiquetas
     addTag: (tag: Tag) => void;            // Añade una etiqueta al estado
-    removeTag: (tagId: number) => void;    // Elimina una etiqueta por su id
+    removeTag: (tagId: number) => Promise<void>;    // Elimina una etiqueta por su id
     clearTags: () => void;                 // Limpia la lista de etiquetas
 }
 
@@ -33,11 +35,18 @@ export const useTagStore = create<State>()(
             },
 
             // Función para eliminar una etiqueta específica por su ID
-            removeTag(tagId) {
+            async removeTag(tagId) {
                 const tags = get().tags;
+                const { error } = await removeTag(tagId);
+                
                 // Se filtra el array para mantener solo las etiquetas que NO coinciden con el ID
-                const filtered = tags?.filter((tags) => tags.id !== tagId);
-                set({ tags: filtered });                
+                if (!error) {
+                    const filtered = tags?.filter((tags) => tags.id !== tagId);
+                    set({ tags: filtered });             
+                    showSuccessToast({ title: "Etiqueta eliminada" });   
+                }
+
+                else showErrorToast({ title: "Fallo la eliminación de la tarea" });
             },
 
             // Función para vaciar completamente el array de etiquetas
