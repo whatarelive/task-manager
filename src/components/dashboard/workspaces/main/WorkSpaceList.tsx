@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export const WorkSpaceList: FC<{ query: string }> = async ({ query }) => {
     const { data, error } = await getWorkSpaces(query);
-    
+
     if (error || !data) {
         return (
             <div className="flex h-60 flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
