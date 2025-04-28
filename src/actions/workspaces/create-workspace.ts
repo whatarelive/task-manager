@@ -2,6 +2,7 @@
 
 import z from "zod";
 import todoApi from "@/lib/api/todo-api";
+import type { WorkSpace } from "@/interfaces/data.interfaces";
 
 
 // Esquema de validación para el formulario de creación de espacios de trabajo
@@ -35,7 +36,7 @@ export async function createWorkSpace(formData: FormData) {
 
     try {
         // Se realiza la petición POST al backend para crear el nuevo espacio de trabajo
-        const { data } = await todoApi.post("/todo/workspaces/", { ...validated.data });
+        const { data } = await todoApi.post<WorkSpace>("/todo/workspaces/", { ...validated.data });
         
         // En caso de éxito, se retorna el objeto creado y un mensaje de confirmación
         return { 

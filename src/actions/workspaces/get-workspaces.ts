@@ -1,6 +1,7 @@
 "use server"
 
 import todoApi from "@/lib/api/todo-api";
+import type { WorkSpaceGet } from "@/interfaces/data.interfaces";
 
 /**
  * Obtiene los espacios de trabajo desde la API
@@ -9,11 +10,11 @@ import todoApi from "@/lib/api/todo-api";
  */
 export async function getWorkSpaces(query: string) {
     // Construye la URL basada en si hay un parámetro de búsqueda
-    const url = query ? `/todo/workspaces?search=${query}` : "/todo/workspaces/";
+    const url = query.length >= 1 ? `/todo/workspaces?search=${query}` : "/todo/workspaces/";
 
     try {
         // Realiza la petición GET a la API
-        const { data } = await todoApi.get(url);
+        const { data } = await todoApi.get<WorkSpaceGet>(url);
         // Retorna los datos obtenidos en caso de éxito
         return { data };
     } catch (error) {
