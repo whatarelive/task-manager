@@ -5,10 +5,14 @@ import type { Tag } from "@/interfaces/data.interfaces";
 
 
 // Acción de servidor para eliminar una etiqueta
-export async function removeTag(id: number) {
+export async function removeTag(id: number, workSpaceId?: string | null) {
+    const url = workSpaceId 
+        ? `/todo/workspaces/${workSpaceId}/tags/${id}/delete/` 
+        : `/todo/user/tags/${id}/delete/`;
+
     try {
         // Se realiza la petición de eliminación a la API
-        await todoApi.delete<Tag>(`/todo/user/tags/${id}/delete/`);
+        await todoApi.delete<Tag>(url);
         
         // Se devuelve un objeto con la data dentro.
         return { error: false };
