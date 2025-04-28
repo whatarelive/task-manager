@@ -12,7 +12,7 @@ import type { Task } from "@/interfaces/data.interfaces";
  * incluyendo filtrado, actualización y eliminación de tareas
  * @param tasks - Array opcional de tareas iniciales
  */
-export function useTasks(tasks?: Task[]) {
+export function useTasks(tasks?: { assigned_to?: string } & Task[]) {
     // Router para navegación programática
     const router = useRouter();
     // Parámetros de búsqueda de la URL actual

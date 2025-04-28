@@ -50,7 +50,7 @@ export const WorkSpaceList: FC<{ query: string }> = async ({ query }) => {
                                 )}
                             </div>
 
-                            <Link href={`/dashboard/workspaces/${workspace.id}`}>
+                            <Link href={`/dashboard/workspaces/${workspace.id}?tab=all`}>
                                 <Button variant="outline">Ver Tareas</Button>
                             </Link>
                         </CardContent>
