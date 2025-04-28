@@ -45,6 +45,7 @@ export default async function WorkspaceInfoPage({ params }: Props) {
                 <section className="flex flex-col md:flex-row-reverse lg:flex-col gap-6 w-full lg:max-w-[450px]">
                     <MembersCard 
                         admin={data.admin} 
+                        workSpaceId={data.id.toString()}
                         members={data.members} 
                         isAdmin={isAdminUser}
                     />

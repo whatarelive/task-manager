@@ -1,15 +1,17 @@
-import type { FC } from "react";
+import { Suspense, type FC } from "react";
+import { getWorkSpaceNoMembers } from "@/actions/workspaces/get-workspace-users";
 import { Avatar } from "@/components/ui/avatar";
 import { AddMemberModal } from "@/components/dashboard/workspaces/details/WorkSpaceAddMemberModal";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Props {
+    workSpaceId: string;
     isAdmin: boolean;
     admin?: string;
     members: string[];
 }
 
-export const MembersCard: FC<Props> = ({ admin, members, isAdmin }) => {
+export const MembersCard: FC<Props> = ({ workSpaceId, admin, members, isAdmin }) => {
     return (
         <Card className="border-0 shadow-md w-full h-fit">
             <CardHeader>
@@ -38,7 +40,12 @@ export const MembersCard: FC<Props> = ({ admin, members, isAdmin }) => {
             
             {isAdmin && (
                 <CardFooter>
-                    <AddMemberModal/>
+                    <Suspense fallback={<div data-slot="skeleton" className="skeleton h-9 w-full"/>}>
+                        <AddMemberModal 
+                            workSpaceId={workSpaceId}
+                            getWorkSpaceNoMembers={getWorkSpaceNoMembers(workSpaceId)}
+                        />
+                    </Suspense>
                 </CardFooter>
             )}
         </Card>

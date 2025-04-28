@@ -1,18 +1,34 @@
 "use client"
 
-import { useActionState } from "react";
-import { Users } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { use, type FC } from "react";
+import { useRouter } from "next/navigation";
+import { UserPlus, Users } from "lucide-react";
+import { addWorkSpaceMember } from "@/actions/workspaces/workspace-add-member";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { showErrorToast, showSuccessToast } from "@/components/ui/sonner";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
+interface Props {
+    workSpaceId: string;
+    getWorkSpaceNoMembers: Promise<{
+        error?: boolean;
+        data?: string[]; 
+    }>
+}
 
-export const AddMemberModal = () => {
-    const [_state, formAction, isPending] = useActionState(
-        async () => {}, 
-        null
-    );
+export const AddMemberModal: FC<Props> = ({ workSpaceId, getWorkSpaceNoMembers }) => {
+    const router = useRouter();
+    const { data } = use(getWorkSpaceNoMembers);
+
+    const handleClick = async (value: string) => {
+        const { error } = await addWorkSpaceMember(workSpaceId, value);
+
+        if (!error) {
+            showSuccessToast({ title: "Miembro agregado "});
+            router.refresh();
+        }
+        else showErrorToast({ title: "Fallo al agregar miembro" });
+    }
 
     return (
         <Dialog>
@@ -31,24 +47,17 @@ export const AddMemberModal = () => {
                     </DialogDescription>
                 </DialogHeader>
                 
-                <form action={formAction} className="grid gap-4">
-                    <div className="flex flex-col items-start gap-2">
-                        <Label htmlFor="username">Nombre de usuario</Label>
-                        <Input 
-                            id="username" 
-                            name="username"
-                            placeholder="Quien deseas agregar..." 
-                            className="col-span-3"
-                            required
-                        />
-                    </div>
+                <ul className="overflow-y-auto w-full space-y-1 elegant-scrollbar max-h-[400px] pr-2">
+                    {data && data.map((username) => (
+                        <li key={username} className="flex w-full justify-between">
+                            <span>{username}</span>
 
-                    <DialogFooter>
-                        <Button type="submit" disabled={isPending}>
-                            { isPending ? "Agregando..." : "Agregar Miembro" }
-                        </Button>
-                    </DialogFooter>
-                </form>
+                            <Button variant="ghost" onClick={ async () => await handleClick(username)}>
+                                <UserPlus className="w-5 h-5"/>
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
             </DialogContent>
         </Dialog>
     )
