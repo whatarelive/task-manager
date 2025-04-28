@@ -1,5 +1,5 @@
 import axios from "axios";
-import { auth } from "@/auth.config";
+import { auth, signOut } from "@/auth.config";
 
 // Url que no necesitan el token para hacer una petición
 const ignoreUrl = ["/user/login/", "/user/login/refresh/", "/user/register/"]
@@ -18,5 +18,11 @@ todoApi.interceptors.request.use(async (config) => {
 
     return config;
 });
+
+// Interceptor para comprobar el statusCode de la respose
+todoApi.interceptors.response.use(async (value) => {
+    if (value.status === 401) await signOut();
+    return value;
+})
 
 export default todoApi;

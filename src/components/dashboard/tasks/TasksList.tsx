@@ -35,10 +35,10 @@ export const TasksList = memo(({ getTasks }: Props) => {
                 <TabsTrigger value="completed" onClick={() => handleSelectTab("completed")}>Completadas</TabsTrigger>
             </TabsList>
             
-            <section className="mt-6">
+            <section>
                 {
                     filterTasks.length === 0 ? (
-                        <div className="h-fit rounded-lg border border-dashed p-4 text-center">
+                        <div className="h-fit rounded-lg border border-dashed p-4 text-center mt-6">
                             <Image 
                                 src="/empty_data.svg" 
                                 alt="Empty Tasks" 
@@ -48,7 +48,7 @@ export const TasksList = memo(({ getTasks }: Props) => {
                             <p className="text-gray-300">No hay tareas para mostrar</p>
                         </div>
                     ) : (
-                        <ul className="space-y-4">
+                        <ul className="space-y-4 mt-1 py-6 pr-4 overflow-y-auto elegant-scrollbar max-h-[600px]">
                             {
                                 filterTasks.map((task) => (
                                     <TaskItem 
