@@ -1,6 +1,7 @@
 import { Suspense, type FC } from "react";
 import { getWorkSpaceNoMembers } from "@/actions/workspaces/get-workspace-users";
 import { Avatar } from "@/components/ui/avatar";
+import { WorkSpaceButtonRemoveMember } from "./WorkSpaceButtonRemoveMember";
 import { AddMemberModal } from "@/components/dashboard/workspaces/details/WorkSpaceAddMemberModal";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -20,22 +21,31 @@ export const MembersCard: FC<Props> = ({ workSpaceId, admin, members, isAdmin })
             </CardHeader>
 
             <CardContent>
-                <div className="space-y-4">
+                <ul className="space-y-4 overflow-y-auto elegant-scrollbar max-h-[160px]">
                     {members.map((member) => (
-                            <div key={member} className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8 text-sm">
-                                    {member.charAt(0)}
-                                </Avatar>
-                                <div>
-                                    <p className="font-medium">{member}</p>
-                                    <p className="text-xs text-muted-foreground">
-                                        { admin === member ? "Administrador" : "Usuario" }
-                                    </p>
+                            <li key={member} className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <Avatar className="h-8 w-8 text-sm">
+                                        {member.charAt(0)}
+                                    </Avatar>
+                                    <div>
+                                        <p className="font-medium">{member}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            { admin === member ? "Administrador" : "Usuario" }
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+
+                                {admin !== member && isAdmin && (
+                                    <WorkSpaceButtonRemoveMember 
+                                        workSpaceId={workSpaceId} 
+                                        username={member}
+                                    />
+                                )}
+                            </li>
                         )
                     )}    
-                </div>
+                </ul>
             </CardContent>
             
             {isAdmin && (
