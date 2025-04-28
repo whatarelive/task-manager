@@ -2,22 +2,31 @@
 
 import clsx from "clsx";
 import Image from "next/image";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { useTagStore } from "@/store/tag-store";
+import { showErrorToast } from "@/components/ui/sonner";
 import { TagItem } from "@/components/dashboard/tag/TagItem";
 import { CreateTagModal } from "@/components/dashboard/tag/CreateTagModal";
-import { TagsCardSkeleton } from "@/components/dashboard/tag/TagsCardSkeleton";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import type { Tag } from "@/interfaces/data.interfaces";
 
+interface Props {
+    getTags: Promise<{
+        error?: boolean;
+        data?: Tag[];
+    }>;
+}
 
-export const TagsCard = () => {
-    const { tags, isLoading, getTags } = useTagStore();
+export const TagsCard = ({ getTags }: Props) => {
+    const { data, error } = use(getTags);
+    const { tags, setTags } = useTagStore((state) => state);
+
+    if (!data && error) showErrorToast({ title: "Error al cargar las etiquetas" });
 
     useEffect(() => {
-        getTags();
+        if (!data) return;
+        setTags(data);
     }, []);
-    
-    if (isLoading) return <TagsCardSkeleton/>;
 
     return (
         <Card className="border-0 shadow-md w-full max-h-[420px]">
@@ -27,7 +36,7 @@ export const TagsCard = () => {
             </CardHeader>
             <CardContent 
                 className={
-                    clsx({ "overflow-auto elegant-scrollbar": tags!.length >= 4 })
+                    clsx({ "overflow-auto elegant-scrollbar": tags.length >= 4 })
                 }
             >
                 <div className="space-y-4">

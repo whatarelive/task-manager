@@ -3,9 +3,9 @@
 import todoApi from "@/lib/api/todo-api";
 import type { Task } from "@/interfaces/data.interfaces";
 
-export async function completeTask(id: number) {
+export async function removeTask(id: number) {
     try {
-        await todoApi.post<Task>(`/todo/user/tasks/${id}/complete/`);
+        await todoApi.delete<Task>(`/todo/user/tasks/${id}/delete/`);
         return { error: false };
     } catch (error) {
         console.log(error);

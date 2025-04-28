@@ -20,11 +20,8 @@ export const ToolsBar = () => {
         const params = new URLSearchParams(searchParams.toString())
         
         // Actualizar o añadir el parámetro
-        if (selectedTag !== "all") {
-            params.set("tag", selectedTag);
-        } else {
-            params.delete("tag");
-        }
+        if (selectedTag !== "all") params.set("tag", selectedTag);
+        else params.delete("tag");
 
         // Navegar a la misma ruta pero con los parámetros actualizados
         router.push(`?${params.toString()}`)

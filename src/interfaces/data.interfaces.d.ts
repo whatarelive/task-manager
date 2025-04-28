@@ -36,5 +36,6 @@ export interface Task {
     status: string;
     create_at: string;
     final_at: string;
-    tags: Tag[];
+    user: number;
+    tags_detail: Tag[];
 }

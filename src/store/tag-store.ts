@@ -1,80 +1,62 @@
+"use client"
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getTags } from "@/actions/tags/get-tags";
 import { removeTag } from "@/actions/tags/remove-tag";
 import { showErrorToast, showSuccessToast } from "@/components/ui/sonner";
 import type { Tag } from "@/interfaces/data.interfaces";
 
-
-// Interfaz que define la estructura de la store
+// Interfaz que define la estructura del estado y sus acciones
 interface State {
-    tags: Tag[] | null;
-    isLoading: boolean;
-    getTags: () => Promise<void>;
-    addTag: (tag: Tag) => Promise<any >;
-    removeTag: (id: number) => Promise<void>;
-    clearTags: () => void;
+    tags: Tag[];                           // Array de etiquetas
+    setTags: (tags: Tag[]) => void;        // Actualiza todas las etiquetas
+    addTag: (tag: Tag) => void;            // Añade una etiqueta al estado
+    removeTag: (tagId: number) => Promise<void>;    // Elimina una etiqueta por su id
+    clearTags: () => void;                 // Limpia la lista de etiquetas
 }
 
-
-// Estado global con las etiquetas del usuario
+// Creación del estado global usando Zustand para manejar etiquetas
 export const useTagStore = create<State>()(
     persist(
-        (set) => ({
-            tags: null, // estado con la información de las etiquetas
-            isLoading: true, // estado de carga de la interfaz
+        (set, get) => ({
+            tags: [], // Estado inicial - array vacío de etiquetas
             
-            // Método para listar todas las etiquetas
-            async getTags() {
-                // Se cambia el estado de carga
-                set({ isLoading: true });
-
-                // Petición de datos con las etiquetas a la API
-                const { error, data } = await getTags();
-                
-                // Se muestra mensaje de error en caso de que falle la petición
-                if (error) showErrorToast({ title: "Fallo la carga de las etiquetas" });
-                
-                // Se actualiza el estado con las etiquetas
-                else set({ tags: data });
-                
-                // Se cambia el estado de carga
-                set({ isLoading: false });
+            // Función para actualizar completamente el listado de etiquetas
+            setTags(tags) {
+                set({ tags });
             },
 
-            // Método para agregar nuevas etiquetas
-            async addTag(tag) {
-                // Si la información es recibida se actualiza el estado 
+            // Función para añadir una nueva etiqueta al inicio del array
+            addTag(tag) {
+                // Agrega la nueva etiqueta al principio del array existente
                 set(({ tags }) => ({ 
-                    tags:  tags ? [tag, ...tags] : [tag],
+                    tags: tags ? [tag, ...tags] : [tag],
                 }));
             },
 
-            // Método para eliminar una etiqueta
-            async removeTag(id) {
-                // Se realiza la petición de eliminación a la API
-                const { data, error } = await removeTag(id);
+            // Función para eliminar una etiqueta específica por su ID
+            async removeTag(tagId) {
+                const tags = get().tags;
+                const { error } = await removeTag(tagId);
                 
-                // Se comprueba el resultado de la server action
-                if (!error && data) {
-                    // Se filtra el arreglo etiquetas para eliminar la etiqueta
-                    set(({ tags }) => ({ tags: tags?.filter((tag) => tag.id !== data.id) }));
-                
-                    // Se muestra el mensaje de confirmación cuando se elimino
-                    showSuccessToast({ title: `Eliminada la etiqueta ${data.name}`});
-                }                    
-                
-                // Se muestra mensaje de error en caso de que falle la petición
-                else showErrorToast({ title: "Fallo la eliminación de la etiqueta" });
+                // Se filtra el array para mantener solo las etiquetas que NO coinciden con el ID
+                if (!error) {
+                    const filtered = tags?.filter((tags) => tags.id !== tagId);
+                    set({ tags: filtered });             
+                    showSuccessToast({ title: "Etiqueta eliminada" });   
+                }
+
+                else showErrorToast({ title: "Fallo la eliminación de la tarea" });
             },
 
-            // Método para limpiar el estado cuando se realiza el cierre de sesión
+            // Función para vaciar completamente el array de etiquetas
+            // Útil durante cierre de sesión o reinicio de la aplicación
             clearTags() {
-                set({ tags: null, isLoading: false });
+                set({ tags: [] });
             },
         }),
 
-        // Nombre para identificar la store en cache 
+        // Configuración para persistencia en localStorage
         { name: "tag-store" }
     )
 )
