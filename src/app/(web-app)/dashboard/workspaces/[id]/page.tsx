@@ -26,7 +26,11 @@ export default async function WorkspaceInfoPage({ params }: Props) {
 
     return (
         <section className="container mx-auto">
-            <ToolsBar isAdmin={isAdminUser} members={data.members}/>
+            <ToolsBar 
+                isAdmin={isAdminUser} 
+                members={data.members} 
+                workSpaceName={data.title}
+            />
 
             <div className="flex flex-col lg:flex-row gap-6 w-full justify-between">
                 <Suspense fallback={<TasksListSkeleton/>}>

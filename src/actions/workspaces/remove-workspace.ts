@@ -11,9 +11,9 @@ export async function removeWorkSpace(id: number) {
     try {
         // Realiza una petición DELETE a la API para eliminar el espacio de trabajo
         await todoApi.delete(`/todo/workspaces/${id}/`);
-
+    
         // Retorna un objeto indicando que la operación fue exitosa
-        return { error: false };
+        return { error: false };        
     
     } catch (error) {
         // En caso de error en la petición, lo registra en la consola
@@ -21,5 +21,5 @@ export async function removeWorkSpace(id: number) {
         
         // Retorna un objeto indicando que hubo un error en la operación
         return { error: true };
-    }
+    }   
 }

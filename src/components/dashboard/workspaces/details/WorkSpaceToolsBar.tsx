@@ -10,9 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface Props {
     isAdmin: boolean;
     members: string[];
+    workSpaceName: string;
 }
 
-export const ToolsBar: FC<Props> = ({ isAdmin, members }) => {
+export const ToolsBar: FC<Props> = ({ isAdmin, members, workSpaceName }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
         
@@ -39,7 +40,7 @@ export const ToolsBar: FC<Props> = ({ isAdmin, members }) => {
 
     return (
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-            <h1 className="text-3xl font-bold">Tareas</h1>
+            <h1 className="text-3xl font-bold">Tareas {workSpaceName}</h1>
 
             <div className="flex w-full flex-col gap-4 md:w-auto md:flex-row">
                 {/* Campo de búsqueda */}
@@ -77,7 +78,7 @@ export const ToolsBar: FC<Props> = ({ isAdmin, members }) => {
                 </Select>
                 
                 {/* Modal para crear una nueva tarea */}
-                { isAdmin && <CreateMemberTaskModal/> }
+                { isAdmin && <CreateMemberTaskModal members={members}/> }
             </div>
         </div>
     )
