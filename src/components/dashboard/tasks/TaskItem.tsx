@@ -3,14 +3,14 @@
 import type { FC } from "react";
 import { es } from "date-fns/locale/es";
 import { format } from "date-fns/format";
-import { CalendarIcon, Trash2 } from "lucide-react";
+import { CalendarIcon, Trash2, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Task } from "@/interfaces/data.interfaces";
 
 interface Props {
-    task: Task;
+    task: Task & { assigned_to?: string };
     updateTask: () => void;
     deleteTask: () => void;
 }
@@ -41,6 +41,13 @@ export const TaskItem: FC<Props> = ({ task, updateTask, deleteTask }) => {
                                 {tag.name}
                             </Badge>
                         ))}
+
+                        {task.assigned_to  && (
+                            <Badge variant="secondary" className="flex items-center gap-1">
+                                <User className="h-3 w-3" />
+                                {task.assigned_to}
+                            </Badge>
+                        )}
                     </div>
                 </div>
             </div>

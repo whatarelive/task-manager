@@ -9,7 +9,8 @@ import type { Tag } from "@/interfaces/data.interfaces";
 // Interfaz que define la estructura del estado y sus acciones
 interface State {
     tags: Tag[];                           // Array de etiquetas
-    setTags: (tags: Tag[]) => void;        // Actualiza todas las etiquetas
+    workSpaceId: string | null;                   // Id del espacio de trabajo       
+    setTags: (tags: Tag[], workspaceId?: string) => void;        // Actualiza todas las etiquetas
     addTag: (tag: Tag) => void;            // Añade una etiqueta al estado
     removeTag: (tagId: number) => Promise<void>;    // Elimina una etiqueta por su id
     clearTags: () => void;                 // Limpia la lista de etiquetas
@@ -20,10 +21,11 @@ export const useTagStore = create<State>()(
     persist(
         (set, get) => ({
             tags: [], // Estado inicial - array vacío de etiquetas
-            
+            workSpaceId: null,
+
             // Función para actualizar completamente el listado de etiquetas
-            setTags(tags) {
-                set({ tags });
+            setTags(tags, workSpaceId) {
+                set({ tags, workSpaceId });
             },
 
             // Función para añadir una nueva etiqueta al inicio del array

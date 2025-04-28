@@ -13,7 +13,7 @@ const CreateTagSchema = z.object({
 
 
 // Acción de servidor para la creación de etiquetas de los usuarios en la plataforma.
-export async function createTag(formData: FormData) {
+export async function createTag(formData: FormData, workSpaceId?: string | null) {
     // Convertir el FormData a un objeto plano para poder validarlo
     const fields = Object.fromEntries(formData.entries());
 
@@ -28,9 +28,11 @@ export async function createTag(formData: FormData) {
         }
     }
  
+    const url = workSpaceId ? `/todo/workspaces/${workSpaceId}/tags/` : "/todo/user/tags/";
+
     try {
         // Se realiza la petición POST al backend para guardar la etiqueta
-        const { data } = await todoApi.post<Tag>("/todo/user/tags/", { ...validated.data });
+        const { data } = await todoApi.post<Tag>(url, { ...validated.data });
         
         // Se notifica a la UI del registro exitoso de la etiqueta
         return {

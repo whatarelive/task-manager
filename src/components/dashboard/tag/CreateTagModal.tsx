@@ -27,10 +27,11 @@ const colors = [
 ];
 
 export const CreateTagModal = () => {
-    const addTag = useTagStore((state) => state.addTag);
+    const { workSpaceId, addTag } = useTagStore();
+
     const [_state, formAction, isPending] = useActionState(
         async(_prev: void | null, formData: FormData) => {
-            const { data, error, message } = await createTag(formData);
+            const { data, error, message } = await createTag(formData, workSpaceId);
 
             if (!error && data) {
                 addTag(data);

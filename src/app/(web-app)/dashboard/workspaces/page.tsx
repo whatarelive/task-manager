@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { InputSearch } from "@/components/global/InputSearch";
 import { WorkSpaceList } from "@/components/dashboard/workspaces/main/WorkSpaceList";
 import { CreateWorkSpaceModal } from "@/components/dashboard/workspaces/main/CreateWorkSpaceModal";
+import { WorkSpaceListSkeleton } from "@/components/dashboard/workspaces/main/WorkSpaceListSkeleton";
 
 interface Props {
     searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -23,7 +24,7 @@ export default async function WorkspacesPage({ searchParams }: Props) {
             </div>     
 
             {/* Listado de Espacios de trabajo */}
-            <Suspense fallback={<p>Cargando...</p>}>
+            <Suspense fallback={<WorkSpaceListSkeleton/>}>
                 <WorkSpaceList query={query}/>
             </Suspense>
         </section>
