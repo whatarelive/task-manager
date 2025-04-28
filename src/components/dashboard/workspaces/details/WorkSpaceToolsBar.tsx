@@ -1,14 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTagStore } from "@/store/tag-store";
 import { InputSearch } from "@/components/global/InputSearch";
 import { CreateMemberTaskModal } from "@/components/dashboard/workspaces/details/WorkSpaceCreateTaskModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+interface Props {
+    isAdmin: boolean;
+    members: string[];
+}
 
-export const ToolsBar = () => {
+export const ToolsBar: FC<Props> = ({ isAdmin, members }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
         
@@ -66,14 +70,14 @@ export const ToolsBar = () => {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Todos los miembros</SelectItem>
-                        {["Pepe"].map((member) => (
+                        {members.map((member) => (
                             <SelectItem key={member} value={member}>{member}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
                 
                 {/* Modal para crear una nueva tarea */}
-                <CreateMemberTaskModal/>
+                { isAdmin && <CreateMemberTaskModal/> }
             </div>
         </div>
     )

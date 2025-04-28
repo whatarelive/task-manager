@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import { auth } from "@/auth.config";
 import { getWorkSpaceInfo } from "@/actions/workspaces/get-workspace-info";
 import { getWorkSpacesTags } from "@/actions/workspaces/get-workspace-tags";
@@ -17,13 +18,15 @@ interface Props {
 export default async function WorkspaceInfoPage({ params }: Props) {
     const { id } = await params;
     const { data } = await getWorkSpaceInfo(id);
-    const session = await auth();
+    
+    if (!data) return notFound();
 
+    const session = await auth();
     const isAdminUser = data?.admin === session?.user.username;
 
     return (
         <section className="container mx-auto">
-            <ToolsBar/>
+            <ToolsBar isAdmin={isAdminUser} members={data.members}/>
 
             <div className="flex flex-col lg:flex-row gap-6 w-full justify-between">
                 <Suspense fallback={<TasksListSkeleton/>}>
@@ -35,10 +38,12 @@ export default async function WorkspaceInfoPage({ params }: Props) {
                 </Suspense>
 
                 <section className="flex flex-col md:flex-row-reverse lg:flex-col gap-6 w-full lg:max-w-[450px]">
-                    <Suspense fallback={<span>Cargando...</span>}>
-                        <MembersCard isAdmin={isAdminUser}/>
-                    </Suspense>
-
+                    <MembersCard 
+                        admin={data.admin} 
+                        members={data.members} 
+                        isAdmin={isAdminUser}
+                    />
+                    
                     <Suspense fallback={<TagsCardSkeleton/>}>
                         <TagsCard 
                             isAdmin={isAdminUser} 
