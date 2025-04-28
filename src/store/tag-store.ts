@@ -38,8 +38,8 @@ export const useTagStore = create<State>()(
 
             // Función para eliminar una etiqueta específica por su ID
             async removeTag(tagId) {
-                const tags = get().tags;
-                const { error } = await removeTag(tagId);
+                const { tags, workSpaceId } = get();
+                const { error } = await removeTag(tagId, workSpaceId);
                 
                 // Se filtra el array para mantener solo las etiquetas que NO coinciden con el ID
                 if (!error) {

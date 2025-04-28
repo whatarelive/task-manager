@@ -198,11 +198,6 @@
   }
 }
 
-.elegant-scrollbar > li {
-  animation: fadeIn 0.3s ease-out forwards;
-  opacity: 0;
-}
-
 .skeleton {
   @apply bg-neutral-200 animate-pulse rounded-md
 }

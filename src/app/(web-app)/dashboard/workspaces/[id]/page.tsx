@@ -8,7 +8,7 @@ import { TagsCard } from "@/components/dashboard/workspaces/details/WorksSpaceTa
 import { ToolsBar } from "@/components/dashboard/workspaces/details/WorkSpaceToolsBar";
 import { MembersCard } from "@/components/dashboard/workspaces/details/MembersCard";
 import { TagsCardSkeleton } from "@/components/dashboard/tag/TagsCardSkeleton";
-import { TasksList } from "@/components/dashboard/workspaces/details/WorkSpaceTasksList";
+import { WorkSpaceTasksList } from "@/components/dashboard/workspaces/details/WorkSpaceTasksList";
 import { TasksListSkeleton } from "@/components/dashboard/tasks/TasksListSkeleton";
 
 interface Props {
@@ -26,13 +26,18 @@ export default async function WorkspaceInfoPage({ params }: Props) {
 
     return (
         <section className="container mx-auto">
-            <ToolsBar isAdmin={isAdminUser} members={data.members}/>
+            <ToolsBar 
+                isAdmin={isAdminUser} 
+                members={data.members} 
+                workSpaceName={data.title}
+            />
 
             <div className="flex flex-col lg:flex-row gap-6 w-full justify-between">
                 <Suspense fallback={<TasksListSkeleton/>}>
-                    <TasksList 
+                    <WorkSpaceTasksList 
                         isAdmin={isAdminUser} 
                         workSpaceId={id} 
+                        members={data.members}
                         getTasks={getWorkSpacesTasks(id)}
                     />
                 </Suspense>
@@ -40,6 +45,7 @@ export default async function WorkspaceInfoPage({ params }: Props) {
                 <section className="flex flex-col md:flex-row-reverse lg:flex-col gap-6 w-full lg:max-w-[450px]">
                     <MembersCard 
                         admin={data.admin} 
+                        workSpaceId={data.id.toString()}
                         members={data.members} 
                         isAdmin={isAdminUser}
                     />

@@ -5,11 +5,12 @@ import { memo, use } from "react";
 import { useTasks } from "@/hooks/useTasks";
 import { showErrorToast } from "@/components/ui/sonner";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TaskItem } from "@/components/dashboard/tasks/TaskItem";
+import { WorkSpaceTaskItem } from "@/components/dashboard/workspaces/details/WorkSpaceTaskItem";
 import type { Task } from "@/interfaces/data.interfaces";
 
 interface Props {
     workSpaceId: string;
+    members: string[];
     isAdmin: boolean;
     getTasks: Promise<{
         error?: boolean;
@@ -17,7 +18,7 @@ interface Props {
     }>
 }
 
-export const TasksList = memo(({ workSpaceId, isAdmin, getTasks }: Props) => {
+export const WorkSpaceTasksList = memo(({ workSpaceId, members, isAdmin, getTasks }: Props) => {
     const { data, error } = use(getTasks);
     const { filterTasks, handleSelectTab, handleUpdate, handleDelete } = useTasks(data);
 
@@ -47,9 +48,11 @@ export const TasksList = memo(({ workSpaceId, isAdmin, getTasks }: Props) => {
                         <ul className="space-y-4 mt-1 py-6 pr-4 overflow-y-auto elegant-scrollbar max-h-[600px]">
                             {
                                 filterTasks.map((task) => (
-                                    <TaskItem 
+                                    <WorkSpaceTaskItem
                                         key={task.id} 
                                         task={task} 
+                                        isAdmin={isAdmin}
+                                        members={members}
                                         updateTask={async() => await handleUpdate(task.id)} 
                                         deleteTask={async() => await handleDelete(task.id)}
                                     />

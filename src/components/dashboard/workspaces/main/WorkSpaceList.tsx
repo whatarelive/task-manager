@@ -4,6 +4,7 @@ import { Briefcase } from "lucide-react";
 import { getWorkSpaces } from "@/actions/workspaces/get-workspaces";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { WorkSpaceButtonDelete } from "@/components/dashboard/workspaces/main/WorkSpaceButtonDelete";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const WorkSpaceList: FC<{ query: string }> = async ({ query }) => {
@@ -49,10 +50,14 @@ export const WorkSpaceList: FC<{ query: string }> = async ({ query }) => {
                                     </div>
                                 )}
                             </div>
-
-                            <Link href={`/dashboard/workspaces/${workspace.id}?tab=all`}>
-                                <Button variant="outline">Ver Tareas</Button>
-                            </Link>
+                            
+                            <div className="flex gap-2">
+                                <WorkSpaceButtonDelete workSpaceId={workspace.id}/>
+                                
+                                <Link href={`/dashboard/workspaces/${workspace.id}?tab=all`}>
+                                    <Button variant="outline">Ver Tareas</Button>
+                                </Link>
+                            </div>
                         </CardContent>
                     </Card>
                 ))

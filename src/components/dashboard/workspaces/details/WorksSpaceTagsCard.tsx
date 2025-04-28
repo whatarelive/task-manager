@@ -8,6 +8,8 @@ import { showErrorToast } from "@/components/ui/sonner";
 import { CreateTagModal } from "@/components/dashboard/tag/CreateTagModal";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import type { Tag } from "@/interfaces/data.interfaces";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface Props {
     workSpaceId: string;
@@ -20,7 +22,7 @@ interface Props {
 
 export const TagsCard = ({ isAdmin, workSpaceId, getTags }: Props) => {
     const { data, error } = use(getTags);
-    const { tags, setTags } = useTagStore((state) => state);
+    const { tags, setTags, removeTag } = useTagStore((state) => state);
 
     if (!data && error) showErrorToast({ title: "Error al cargar las etiquetas" });
 
@@ -60,6 +62,12 @@ export const TagsCard = ({ isAdmin, workSpaceId, getTags }: Props) => {
                                     <span className={`h-3 w-3 rounded-full`} style={{ background: `${tag.color}` }} />
                                     <span>{ tag.name }</span>
                                 </div>
+
+                                {isAdmin && (
+                                    <Button variant="destructive" size="icon" onClick={() => removeTag(tag.id)}>
+                                        <Trash2 className="w-6 h-6"/>
+                                    </Button>
+                                )}
                             </div>
                         )
                     )}
