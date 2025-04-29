@@ -1,21 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { CalendarIcon, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import { useTagStore } from "@/store/tag-store";
+import { useTaskModal } from "@/hooks/useTaskModal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { CalendarModal } from "@/components/dashboard/tasks/CreateTaskCalendar";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { initialTags } from "@/lib/data/taks";
-import { Calendar } from "@/components/ui/calendar";
 
 export const CreateTaskModal = () => {
-  const [tags, setTags] = useState(initialTags);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>();
+    // Arreglo de etiquetas del usuario
+    const { tags, workSpaceId } = useTagStore();
+    // Custom hook para manejar la obtención de datos de los campos del modal
+    const { isPending, formAction, handleAddTag, handleDateSelect } = useTaskModal(tags, workSpaceId);
 
     return (
         <Dialog>
@@ -33,48 +31,52 @@ export const CreateTaskModal = () => {
                         Describe lo que necesitas hacer proximamente. 
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                
+                <form action={formAction} className="grid gap-4 py-4">
                     <div className="flex flex-col items-start gap-2">
-                        <Input id="name" placeholder="Que necesitas hacer..." className="col-span-3" />
+                        <Input 
+                            id="title" 
+                            name="title"
+                            placeholder="Que necesitas hacer..." 
+                            className="col-span-3"
+                            required
+                        />
                     </div>
+                    
                     <div className="flex flex-col gap-4 sm:flex-row">
-                      <div className="grow">
-                        <Select value={selectedTag || ""} onValueChange={setSelectedTag}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Seleccionar etiqueta" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">Sin etiqueta</SelectItem>
-                            {tags.map((tag) => (
-                              <SelectItem key={tag.id} value={tag.id}>
-                                <div className="flex items-center gap-2">
-                                  <div className={`h-3 w-3 rounded-full ${tag.color}`} />
-                                  <span>{tag.name}</span>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grow">
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start text-left font-normal">
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {selectedDate ? format(selectedDate, "PPP", { locale: es }) : <span>Fecha límite</span>}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
+                        <div className="grow">
+                            <Select name="tag">
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Seleccionar etiqueta" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="0">Sin etiqueta</SelectItem>
+                                    {tags?.map((tag) => (
+                                        <SelectItem key={tag.id} value={tag.id.toString()}>
+                                            <div className="flex items-center gap-2">
+                                                <span className="h-3 w-3 rounded-full" style={{ background: tag.color }}/>
+                                                <span>{tag.name}</span>
+                                            </div>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <Button type="button" onClick={handleAddTag}>
+                            Agregar
+                        </Button>
                     </div>
-                </div>
-                <DialogFooter>
-                    <Button type="submit">Guardar Tarea</Button>
-                </DialogFooter>
+
+                    <CalendarModal updateDate={handleDateSelect}/>
+
+                    <DialogFooter>
+                        <Button type="submit" disabled={isPending}>
+                            { isPending ? "Guardando..." : "Guardar Tarea" }
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
-    )
-}
+    );
+};

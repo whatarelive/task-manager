@@ -21,7 +21,7 @@ async function submitForm(_prevState: StateForm | null, formData: FormData) {
     // Manejo de la respuesta
     if (result) {
         showSuccessToast({ title: message });
-        redirect("/dashboard");
+        redirect("/dashboard?tab=all");
     }
     
     else showErrorToast({ title: message });
@@ -51,16 +51,16 @@ export default function LoginPage() {
                 <form action={formAction} className="space-y-4">
                     <CardContent>
                         <div className="space-y-2 mb-4">
-                            <Label htmlFor="email" className="text-sm font-medium">
-                                Correo electrónico
+                            <Label htmlFor="username" className="text-sm font-medium">
+                                Usuario
                             </Label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-2 h-5 w-5 text-muted-foreground" />
                                 <Input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    placeholder="ejemplo@correo.com"
+                                    id="username"
+                                    name="username"
+                                    type="username"
+                                    placeholder="juanluis"
                                     className="pl-10"
                                     required
                                 />

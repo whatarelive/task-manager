@@ -12,7 +12,7 @@ export const NavLinks = () => {
     return ( 
         <nav className="hidden items-center gap-4 md:flex">
             <Link 
-                href="/dashboard" 
+                href="/dashboard?tab=all" 
                 className={buttonVariants({ 
                     variant: "ghost", 
                     className: pathName === "/dashboard" ? "bg-muted" : "",

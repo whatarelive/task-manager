@@ -1,7 +1,7 @@
 import type { ComponentProps, FC } from "react";
 
 export const Avatar: FC<ComponentProps<"span">> = ({ children }) => (
-    <span
+    <div
         data-slot="avatar"
         className="relative flex size-8 shrink-0 overflow-hidden rounded-full"
     >
@@ -11,5 +11,5 @@ export const Avatar: FC<ComponentProps<"span">> = ({ children }) => (
         >
             { children }
         </span>
-    </span>
+    </div>
 )
