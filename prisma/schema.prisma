@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Tipos de datos
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum NotificationType {
+  INVITE_TO_WORKSPACE
+  DENIED_INVITE_WORKSPACE
+  ACEPT_INVITE_WORSPACE
+  TASK_ASSIGNED
+  TASK_COMPLETE
+}
+
+// Modelos
+model User {
+  id               String             @id @default(uuid())
+  email            String             @unique
+  username         String             @unique
+  passwordHash     String             @map("password")
+  fullname         String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  notifications    Notification[]     @relation("ReceivedNotifications")
+  pushNotificaions Notification[]     @relation("SentNotifications")
+  tasks            UserTask[]
+  tags             UserTag[]
+  workspaces       WorkSpace[]        @relation("UserAdmin")
+  wsMembersShips   WSMember[]
+  assignedTasks    WSTaskAssignment[] @relation(name: "AssignTask")
+
+  // Optimización
+  @@index([username, email])
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  message     String
+  type        NotificationType
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  receiver    User             @relation("ReceivedNotifications", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId  String
+  sender      User?            @relation("SentNotifications", fields: [senderId], references: [id])
+  senderId    String?
+  workspace   WorkSpace?       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String?
+
+  @@index([receiverId, read])
+}
+
+model UserTask {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      Boolean      @default(false)
+  priority    TaskPriority
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  finalAt     DateTime?
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  tags        UserTag[]
+
+  // Optimización
+  @@index([title])
+}
+
+model UserTag {
+  id     String     @id @default(uuid())
+  name   String
+  color  String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  tasks  UserTask[]
+
+  // restriciones generales
+  @@unique([userId, name])
+}
+
+model WorkSpace {
+  id            String         @id @default(uuid())
+  title         String
+  description   String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  admin         User           @relation(name: "UserAdmin", fields: [adminId], references: [id], onDelete: Restrict)
+  adminId       String
+  members       WSMember[]
+  tags          WSTag[]
+  tasks         WSTask[]
+  notifications Notification[]
+
+  // restriciones generales
+  @@unique([adminId, title])
+  // Optimización
+  @@index([title])
+}
+
+model WSMember {
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  workspace   WorkSpace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+
+  // restriciones generales
+  @@unique([userId, workspaceId])
+}
+
+model WSTag {
+  id          String    @id @default(uuid())
+  name        String
+  color       String
+  workspace   WorkSpace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  tasks       WSTask[]
+
+  // restriciones generales
+  @@unique([workspaceId, name])
+}
+
+model WSTask {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  status      Boolean            @default(false)
+  priority    TaskPriority
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  finalAt     DateTime?
+  workspace   WorkSpace          @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  workspaceId String
+  assignedTo  WSTaskAssignment[]
+  tags        WSTag[]
+}
+
+model WSTaskAssignment {
+  id         String   @id @default(uuid())
+  task       WSTask   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId     String
+  user       User     @relation(name: "AssignTask", fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  assignedAt DateTime @default(now())
+
+  // Restriciones generales
+  @@unique([taskId, userId])
+}
