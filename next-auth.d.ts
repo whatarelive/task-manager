@@ -1,47 +1,44 @@
+import { DefaultSession } from "next-auth";
 import "next-auth";
 import "next-auth/jwt";
 
-// Define las propiedades del usuario
-interface UserInfo {
-    username?: string;
-    email?: string;
-    full_name?: string;
-}
-
 /**
-   * Extiende la interfaz Session de NextAuth
-   * @property {UserInfo} user - Datos del usuario
-   * @property {string} accessToken - Token de acceso JWT
-   * @property {string} refreshToken - Token de refresco para renovar el accessToken
-   * @property {boolean} isAuthenticated - Estado de autenticación del usuario
-   */
+ * Extiende la interfaz Session de NextAuth
+ * @property {UserInfo} user - Datos del usuario
+ * @property {boolean} isAuthenticated - Estado de autenticación del usuario
+ */
 declare module "next-auth" {
     interface Session {
-        user: UserInfo;
-        accessToken: string;
-        refreshToken: string;
+        user: {
+            id: string;
+            email: string;
+            username: string;
+            fullname: string;
+        } & DefaultSession['user'];
         isAuthenticated: boolean;
     }
 
-    interface User extends UserInfo {
-        accessToken?: string;
-        refreshToken?: string;
+    interface User {
+        id?: string;
+        email?: string;
+        username?: string;
+        fullname?: string;
+        createdAt?: Date;
     }
 }
 
 /**
  * Extiende la interfaz JWT de NextAuth
  * @property {User} user - Datos del usuario
- * @property {string} accessToken - Token de acceso JWT
- * @property {number} accessTokenExpires - Timestamp de expiración del token de acceso
- * @property {string} refreshToken - Token de refresco
- * @property {number} refreshTokenExpires - Timestamp de expiración del token de refresco
  */
 declare module "next-auth/jwt" {
-    interface JWT extends UserInfo {
-        accessToken?: string;
-        accessTokenExpires?: number;
-        refreshToken?: string;
-        refreshTokenExpires?: number;
+    interface JWT {
+        data: {
+            id?: string;
+            email?: string;
+            username?: string;
+            fullname?: string;
+            createdAt?: Date;
+        }
     }
 }

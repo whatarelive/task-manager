@@ -1,46 +1,39 @@
 "use client";
 
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { memo, useCallback, type FC } from "react";
-import { ClipboardCheck, LogOut, SquareChartGantt, UserPen } from "lucide-react";
+import { ClipboardCheck, LogOut, SquareChartGantt } from "lucide-react";
 import { logout } from "@/actions/auth/logout";
 import { useTagStore } from "@/store/tag-store";
 import { useTaskStore } from "@/store/task-store";
 import { Avatar } from "@/components/ui/avatar";
 import { showSuccessToast, showErrorToast } from "@/components/ui/sonner";
-
 import * as DropdownMenu from "@/components/ui/dropdown-menu";  
 
+
 export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
-    // Hook de Next js para obtener el path de la ruta del lado del cliente.
-    const pathName = usePathname();
-    // Hook de Next js para realizar la navegación del lado del cliente.
-    const { push, refresh } = useRouter();
+    const router = useRouter();
 
     const clearTags = useTagStore((state) => state.clearTags);
     const clearTask = useTaskStore((state) => state.clearStore);
 
     // Función de manejo del cierre de sesión.
-    const handleClick = useCallback(
-        async() => {
-            // Cierre de la sesión en el servidor.
-            const { result, message } = await logout(); 
-   
-            // Manejo de la respuesta.
-            if (result) {
-                clearTags();
-                clearTask();
-                showSuccessToast({ title: message }); 
-            }
-            else return showErrorToast({ title: message });
-   
-            // Se realiza una forma de actualización diferente dependiendo en que ruta
-            // se encuentre el usuario en ese momento.
-            if (pathName !== "/") redirect("/");
-            else refresh();
-        },
-        [username],
-    )
+    const handleClick = useCallback( async () => {
+        // Cierre de la sesión en el servidor.
+        const { result, message } = await logout(); 
+
+        // Manejo de la respuesta.
+        if (result) {
+            clearTags();
+            clearTask();
+
+            showSuccessToast({ title: message }); 
+
+            router.replace("/");
+        }
+        else return showErrorToast({ title: message });
+    
+    }, [username])
 
     return (
         <DropdownMenu.Root>
@@ -60,11 +53,11 @@ export const NavDropMenu: FC<{ username?: string }> = memo(({ username }) => {
                 <DropdownMenu.Separator />
 
                 <DropdownMenu.Group>
-                    <DropdownMenu.Item onClick={() => push("/dashboard?tab=all")} className="flex md:hidden">
+                    <DropdownMenu.Item onClick={() => router.push("/dashboard?tab=all")} className="flex md:hidden">
                         <ClipboardCheck className="w-6 h-6"/>
                         Tareas
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => push("/dashboard/workspaces")} className="flex md:hidden">
+                    <DropdownMenu.Item onClick={() => router.push("/dashboard/workspaces")} className="flex md:hidden">
                         <SquareChartGantt className="w-6 h-6"/>
                         Espacios
                     </DropdownMenu.Item>

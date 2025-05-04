@@ -1,17 +1,18 @@
 "use server";
 
 import z from "zod";
-import todoApi from "@/lib/api/todo-api";
+import bcryptjs from "bcryptjs";
+import { AuthError } from "next-auth";
+import { signIn } from "@/auth.config";
+import prisma from "@/lib/db/prisma";
 import type { StateForm } from "@/interfaces/data.interfaces";
-import type { UserRegisterResponse } from "@/interfaces/auth.interfaces";
 
 
 // Esquema de validación para el formulario de registro del usuario.
 const RegisterSchema = z.object({
-    username: z.string().min(5).max(50),
     email: z.string().email().max(254),
-    first_name: z.string().min(3).max(50),
-    last_name: z.string().min(3).max(50),
+    username: z.string().min(5).max(50).toLowerCase(),
+    fullname: z.string().min(3).max(50),
     password: z.string().min(5).max(25).regex(/^[a-zA-Z0-9]+$/),
 });
 
@@ -21,10 +22,9 @@ export async function createUser(formData: FormData): Promise<StateForm> {
     // Convertir el FormData a un objeto plano para poder validarlo
     const fields = Object.fromEntries(formData.entries());
     
-    // Validar los datos usando Zod schema para asegurar que cumplen con el formato requerido
+    // Validar los datos para asegurar que cumplen con el formato requerido
     const validated = await RegisterSchema.safeParseAsync(fields);
 
-    // Si la validación falla, retornar los errores específicos de cada campo
     if (!validated.success) {
         return {
             result: false,
@@ -32,24 +32,33 @@ export async function createUser(formData: FormData): Promise<StateForm> {
         }
     }
 
+    // Hash de la contraseña del usuario
+    const { password, ...rest } = validated.data;
+    const passwordHash = bcryptjs.hashSync(password, 12);
+
     try {
         // Se guarda el usuario en la Base de Datos
-        const { data } = await todoApi.post<UserRegisterResponse>(
-            "/user/register/", 
-            { ...validated.data },
-        );
+        const { username } = await prisma.user.create({
+            data: { ...rest, passwordHash },
+            select: { username: true },
+        });
 
-        // Se notifica el registro a la UI
-        return { 
+        // Inicio de sesión del usuario registrado
+        await signIn("credentials", { 
+            username, password, 
+            redirect: false 
+        });
+
+        return {
             result: true,
-            message: `Usuario ${data.username} registrado`
+            message: `Usuario ${username} registrado`,
         };
 
     } catch (error) {
-        // Si falla el registro en la Base de Datos se notifica a la UI.
-        return {
-            result: false,
-            message: "Registro de usuario fallido",
-        }
+        const message = error instanceof AuthError 
+            ? "Registro de usuario fallido"
+            : "Conexión fallida";
+
+        return { result: false, message };
     }    
 }

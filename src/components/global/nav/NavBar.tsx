@@ -17,7 +17,7 @@ export async function NavBar() {
                 </Link>
 
                 {/* Navegación del panel de administración */}
-                <NavLinks />
+                { session?.isAuthenticated && <NavLinks /> }
 
                 {/* Se comprueba la sesión del usuario para mostrar el contenido */}
                 {
