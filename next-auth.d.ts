@@ -23,6 +23,7 @@ declare module "next-auth" {
         email?: string;
         username?: string;
         fullname?: string;
+        createdAt?: Date;
     }
 }
 
@@ -37,6 +38,7 @@ declare module "next-auth/jwt" {
             email?: string;
             username?: string;
             fullname?: string;
+            createdAt?: Date;
         }
     }
 }

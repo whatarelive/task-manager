@@ -7,8 +7,6 @@ import { buttonVariants } from "@/components/ui/button";
 export const NavLinks = () => {
     const pathName = usePathname();
 
-    if (!pathName.includes("/dashboard")) return <></>;
-
     return ( 
         <nav className="hidden items-center gap-4 md:flex">
             <Link 

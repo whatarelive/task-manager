@@ -34,13 +34,14 @@ export const authConfig: NextAuthConfig = {
         },
 
         // Función que se ejecuta cuando se genera el token JWT
-        jwt({ token, user }) {
-            if (user.email && user.fullname && user.username) {
+        async jwt({ token, user }) {
+            if (user) {
                 token.data = {
                     id: user.id,
-                    email: user.email,
+                    email: user.email!,
                     username: user.username,
                     fullname: user.fullname,
+                    createdAt: user.createdAt,
                 };
             }
 
@@ -48,9 +49,10 @@ export const authConfig: NextAuthConfig = {
         },
         
         // Función que se ejecuta cuando se crea la sesión
-        session({ session, token }) {
+        async session({ session, token }) {
             session.user = token.data as any;
-            session.isAuthenticated = token.data.email !== undefined;
+            session.isAuthenticated = token.data.id !== undefined;
+            
             return session;
         },
     },
@@ -70,7 +72,9 @@ export const authConfig: NextAuthConfig = {
                         id: true,
                         email: true, 
                         fullname: true,
+                        username: true,
                         passwordHash: true,
+                        createdAt: true,
                     },
                 });
 
