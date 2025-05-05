@@ -8,7 +8,7 @@ export async function getTags() {
     // Extracción del id del usuario
     const session = await auth();
 
-    // Petición de las etiquetas al backend.
+    // Extracción de las etiquetas de la base de datos.
     return await prisma.userTag.findMany({
         where: { userId: session?.user.id },
         select: { id: true, name: true, color: true }
