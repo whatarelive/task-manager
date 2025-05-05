@@ -4,33 +4,31 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { removeTag } from "@/actions/tags/remove-tag";
 import { showErrorToast, showSuccessToast } from "@/components/ui/sonner";
-import type { Tag } from "@/interfaces/data.interfaces";
+import type { UserTag } from "@/interfaces/data.interfaces";
 
-// Interfaz que define la estructura del estado y sus acciones
+// Interfaz que define la estructura de la store y sus acciones
 interface State {
-    tags: Tag[];                           // Array de etiquetas
-    workSpaceId: string | null;                   // Id del espacio de trabajo       
-    setTags: (tags: Tag[], workspaceId?: string) => void;        // Actualiza todas las etiquetas
-    addTag: (tag: Tag) => void;            // Añade una etiqueta al estado
-    removeTag: (tagId: number) => Promise<void>;    // Elimina una etiqueta por su id
-    clearTags: () => void;                 // Limpia la lista de etiquetas
+    tags: UserTag[];
+    setTags: (tags: UserTag[]) => void;
+    addTag: (tag: UserTag) => void;
+    removeTag: (tagId: string) => Promise<void>;
+    clearTags: () => void;
 }
 
 // Creación del estado global usando Zustand para manejar etiquetas
 export const useTagStore = create<State>()(
     persist(
         (set, get) => ({
-            tags: [], // Estado inicial - array vacío de etiquetas
-            workSpaceId: null,
+            // Estado inicial
+            tags: [], 
 
             // Función para actualizar completamente el listado de etiquetas
-            setTags(tags, workSpaceId) {
-                set({ tags, workSpaceId });
+            setTags(tags) {
+                set({ tags });
             },
 
             // Función para añadir una nueva etiqueta al inicio del array
             addTag(tag) {
-                // Agrega la nueva etiqueta al principio del array existente
                 set(({ tags }) => ({ 
                     tags: tags ? [tag, ...tags] : [tag],
                 }));
@@ -38,17 +36,16 @@ export const useTagStore = create<State>()(
 
             // Función para eliminar una etiqueta específica por su ID
             async removeTag(tagId) {
-                const { tags, workSpaceId } = get();
-                const { error } = await removeTag(tagId, workSpaceId);
+                const { result, message } = await removeTag(tagId);
                 
                 // Se filtra el array para mantener solo las etiquetas que NO coinciden con el ID
-                if (!error) {
-                    const filtered = tags?.filter((tags) => tags.id !== tagId);
+                if (result) {
+                    const filtered = get().tags.filter((tags) => tags.id !== tagId);
                     set({ tags: filtered });             
-                    showSuccessToast({ title: "Etiqueta eliminada" });   
+                    showSuccessToast({ title: message });   
                 }
 
-                else showErrorToast({ title: "Fallo la eliminación de la tarea" });
+                else showErrorToast({ title: message });
             },
 
             // Función para vaciar completamente el array de etiquetas

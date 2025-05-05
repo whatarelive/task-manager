@@ -9,11 +9,12 @@ import { CalendarModal } from "@/components/dashboard/tasks/CreateTaskCalendar";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
+
 export const CreateTaskModal = () => {
     // Arreglo de etiquetas del usuario
-    const { tags, workSpaceId } = useTagStore();
+    const tags = useTagStore((state) => state.tags);
     // Custom hook para manejar la obtención de datos de los campos del modal
-    const { isPending, formAction, handleAddTag, handleDateSelect } = useTaskModal(tags, workSpaceId);
+    const { isPending, formAction, handleAddTag, handleDateSelect } = useTaskModal(tags);
 
     return (
         <Dialog>
@@ -45,7 +46,7 @@ export const CreateTaskModal = () => {
                     
                     <div className="flex flex-col gap-4 sm:flex-row">
                         <div className="grow">
-                            <Select name="tag">
+                            <Select name="tag" required>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Seleccionar etiqueta" />
                                 </SelectTrigger>

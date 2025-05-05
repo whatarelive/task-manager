@@ -1,13 +1,12 @@
 "use client";
 
-import type { FC } from "react";
 import { Trash2 } from "lucide-react";
 import { useTagStore } from "@/store/tag-store";
 import { Button } from "@/components/ui/button";
-import type { Tag } from "@/interfaces/data.interfaces";
+import type { FC } from "react";
+import type { UserTag } from "@/interfaces/data.interfaces";
 
-
-export const TagItem: FC<{ tag: Tag }> = ({ tag }) => {
+export const TagItem: FC<{ tag: UserTag }> = ({ tag }) => {
     const removeTag = useTagStore((state) => state.removeTag); 
 
     return (

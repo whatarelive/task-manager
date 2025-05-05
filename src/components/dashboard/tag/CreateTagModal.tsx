@@ -27,13 +27,13 @@ const colors = [
 ];
 
 export const CreateTagModal = () => {
-    const { workSpaceId, addTag } = useTagStore();
+    const addTag = useTagStore((state) => state.addTag);
 
     const [_state, formAction, isPending] = useActionState(
         async(_prev: void | null, formData: FormData) => {
-            const { data, error, message } = await createTag(formData, workSpaceId);
+            const { data, result, message } = await createTag(formData);
 
-            if (!error && data) {
+            if (result && data) {
                 addTag(data);
                 showSuccessToast({ title: message });
             }
@@ -59,6 +59,7 @@ export const CreateTagModal = () => {
                             Define como quieres que se vea la etiqueta. 
                         </DialogDescription>
                     </DialogHeader>
+
                     <div className="grid gap-4 py-4">
                         <div className="flex flex-col items-start gap-2">
                             <Label htmlFor="name">Nombre de la etiqueta</Label>
@@ -83,6 +84,7 @@ export const CreateTagModal = () => {
                             </Select>
                         </div>
                     </div>
+
                     <DialogFooter>
                         <Button type="submit">
                             { isPending ? "Guardando Etiqueta..." : "Guardar Etiqueta" }

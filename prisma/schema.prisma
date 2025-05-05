@@ -14,6 +14,11 @@ enum TaskPriority {
   HIGH
 }
 
+enum TaskStatus {
+  COMPLETED
+  PENDING
+}
+
 enum NotificationType {
   INVITE_TO_WORKSPACE
   DENIED_INVITE_WORKSPACE
@@ -63,8 +68,7 @@ model UserTask {
   id          String       @id @default(uuid())
   title       String
   description String?
-  status      Boolean      @default(false)
-  priority    TaskPriority
+  status      TaskStatus   @default(PENDING)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   finalAt     DateTime?
