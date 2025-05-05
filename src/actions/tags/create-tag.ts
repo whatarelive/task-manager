@@ -14,7 +14,7 @@ const CreateTagSchema = z.object({
 export async function createTag(formData: FormData) {
     // Convertir el FormData a un objeto plano y validarlo con Zod
     const fields = Object.fromEntries(formData.entries());
-    const validated = CreateTagSchema.safeParse(fields);
+    const validated = await CreateTagSchema.safeParseAsync(fields);
     
     // Si los datos son incorrectos
     if (!validated.success) {

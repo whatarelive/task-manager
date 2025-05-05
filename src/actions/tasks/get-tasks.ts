@@ -1,22 +1,24 @@
 "use server";
 
-import { auth } from "@/auth.config";
+import { unstable_cache } from "next/cache";
 import prisma from "@/lib/db/prisma";
 import type { TaskStatus } from "@prisma/client";
 
-// Acción del servidor para obtener todas las tareas del usuario
-export async function getTask(status?: TaskStatus) {
-    // Extracción de la id del usuario
-    const session = await auth();
-
-    // Recuperar las tareas del base de datos según el estado 
-    return await prisma.userTask.findMany({
-        where: { 
-            userId: session?.user.id,
-            status: status,
-        },
-        include: {
-            tags: true,
-        }
-    });
-}
+// Obtener todas las tareas del usuario y almacenarlas en cache.
+export const getTask = unstable_cache(
+    // Acción del servidor.
+    async (userId: string, status?: TaskStatus) => {
+        // Recuperar las tareas del base de datos según el estado.
+        return await prisma.userTask.findMany({
+            where: { userId, status },
+            orderBy: { status: "desc" },
+            include: {
+                tags: true,
+            }
+        });
+    },
+    // Clave única para esta consulta.
+    ["all-tasks"],
+    // Opciones de caché con tareas.
+    { tags: ["tasks-data"] },
+);

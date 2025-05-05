@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { auth } from "@/auth.config";
 import { getTask } from "@/actions/tasks/get-tasks";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TaskItem } from "@/components/dashboard/tasks/TaskItem";
@@ -15,8 +16,10 @@ export default async function Tasks({ searchParams }: Props) {
     const selectTab = (await searchParams).tab;
     const status = selectTab !== "all" ? (selectTab?.toUpperCase() as TaskStatus) : undefined;  
     
+    const session = await auth();
+
     // Tareas de a mostrar en la pestaña seleccionada.
-    const tasks = await getTask(status);
+    const tasks = await getTask(session?.user.id!, status);
 
     return ( 
         <section className="w-full">

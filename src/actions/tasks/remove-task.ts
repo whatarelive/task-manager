@@ -1,14 +1,31 @@
 "use server"
 
-import todoApi from "@/lib/api/todo-api";
-import type { Task } from "@/interfaces/data.interfaces";
+import prisma from "@/lib/db/prisma";
+import { revalidateTag } from "next/cache";
 
-export async function removeTask(id: number) {
+// Acción del servidor para eliminar una tarea del usuario.
+export async function removeTask(id: string) {
     try {
-        await todoApi.delete<Task>(`/todo/user/tasks/${id}/delete/`);
-        return { error: false };
-    } catch (error) {
-        console.log(error);
-        return { error: true };
+        // Eliminar la tarea de la base de datos.
+        await prisma.userTask.delete({
+            where: { id },
+        });
+
+    } catch (error) {    
+        // Mensaje según el error sucedido.
+        const message = (error as any).code === "P2025"
+            ? "No existe la tarea" 
+            : "Fallo la creación de la tarea";
+        
+        return { result: false, message };
     }
+
+    // Revalidación de los datos de las páginas.
+    revalidateTag("tasks-data");
+    revalidateTag("tasks-summary");
+
+    return { 
+        result: true,
+        message: "Tarea eliminada"
+    };
 }

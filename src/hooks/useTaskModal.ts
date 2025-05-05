@@ -1,15 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useActionState, useRef } from "react";
 import { createTask } from "@/actions/tasks/create-task";
 import { showErrorToast, showInfoToast, showSuccessToast } from "@/components/ui/sonner";
-import type { Tag } from "@/interfaces/data.interfaces";
+import type { UserTag } from "@/interfaces/data.interfaces";
 
-export function useTaskModal(tags: Tag[], workSpaceId: string | null) {
-    const router = useRouter();
+export function useTaskModal(tags: UserTag[]) {
     // Referencia de los ids de las etiquetas
-    const tagsRef = useRef<number[]>([]);
+    const tagsRef = useRef<string[]>([]);
     // Referencia del valor del calendario
     const dateRef = useRef<Date | undefined>(undefined);
     
@@ -19,21 +17,19 @@ export function useTaskModal(tags: Tag[], workSpaceId: string | null) {
             // Obtener los datos del formulario
             const title = formData.get('title') as string;
             const tags = tagsRef.current;
-            const final_at = dateRef.current;
+            const finalAt = dateRef.current;
             
             // Llamar a la acción del servidor
-            const { message, data, error } = await createTask({ title, final_at, tags }, workSpaceId);
+            const { message, result } = await createTask({ title, finalAt, tags });
             
             // Manejar el resultado
-            if (!error && data) {
+            if (result) {
                 // Mensaje de confirmación
                 showSuccessToast({ title: message });
                 
                 // Limpiar los refs
                 tagsRef.current = [];
                 dateRef.current = undefined;
-
-                router.refresh();
             } 
 
             // Mensaje de error si falla la acción
@@ -47,17 +43,14 @@ export function useTaskModal(tags: Tag[], workSpaceId: string | null) {
         // Se recupera el elemento seleccionado en el elemento select. 
         const selectElement = document.querySelector('select[name="tag"]') as HTMLSelectElement;
         
-        if (!selectElement) return;
-        
         // Evaluación del valor recuperado
-        const id = Number(selectElement.value);
-        if (isNaN(id) || id === 0 || tagsRef.current.includes(id)) return;
+        if (tagsRef.current.includes(selectElement.value)) return;
         
         // Se actualiza los datos de la referencia
-        tagsRef.current = [...tagsRef.current, id];
+        tagsRef.current = [...tagsRef.current, selectElement.value];
 
         // Confirmación visual para mostrar las etiquetas seleccionadas
-        const tag = tags.find((tag) => tag.id === id);
+        const tag = tags.find((tag) => tag.id === selectElement.value);
         showInfoToast({ title: `Etiqueta ${tag?.name} agregada`});
     };
 

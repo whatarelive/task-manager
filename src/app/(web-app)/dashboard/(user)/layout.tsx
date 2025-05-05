@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { auth } from "@/auth.config";
 import { getTags } from "@/actions/tags/get-tags";
 import { TagsCard } from "@/components/dashboard/tag/TagsCard";
 import { ToolsBar } from "@/components/dashboard/tasks/ToolsBar";
@@ -9,7 +10,9 @@ interface Props {
    readonly tasks: React.ReactNode;
 }
 
-export default function UsersLayout({ summary, tasks }: Props) {
+export default async function UsersLayout({ summary, tasks }: Props) {
+    const session = await auth();
+
     return (
         <div className="bg-neutral-50 w-full p-6">
             <div className="container mx-auto">
@@ -27,7 +30,7 @@ export default function UsersLayout({ summary, tasks }: Props) {
 
                         {/* Tarjeta de etiquetas */}
                         <Suspense fallback={<TagsCardSkeleton/>}>
-                            <TagsCard getTags={getTags()}/>
+                            <TagsCard getTags={getTags(session?.user.id!)}/>
                         </Suspense>
                     </div>
                 </section>

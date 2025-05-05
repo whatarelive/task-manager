@@ -1,9 +1,11 @@
 import { getSummary } from "@/actions/tasks/get-summary";
+import { auth } from "@/auth.config";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function SummaryPage() {
-    const { total, pending, completed } = await getSummary();
+    const session = await auth();
+    const { total, pending, completed } = await getSummary(session?.user.id!);
 
     return (
         <Card className="border-0 shadow-md w-full h-fit">
