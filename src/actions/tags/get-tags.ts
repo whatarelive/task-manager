@@ -1,22 +1,16 @@
 "use server"
 
-import todoApi from "@/lib/api/todo-api";
-import type { Tag } from "@/interfaces/data.interfaces";
+import { auth } from "@/auth.config";
+import prisma from "@/lib/db/prisma";
 
-
-// Acción de servidor para recuperar las etiquetas.
+// Acción de servidor para recuperar las etiquetas del usuario.
 export async function getTags() {
-    try {
-        // Petición de las etiquetas al backend.
-        const { data } = await todoApi.get<Tag[]>("/todo/user/tags/");
+    // Extracción del id del usuario
+    const session = await auth();
 
-        // Se devuelve un objeto con la data dentro.
-        return { data };
-
-    } catch (error) {
-        console.log(error);
-        
-        // Se devuelve el error
-        return { error: true };
-    }
+    // Petición de las etiquetas al backend.
+    return await prisma.userTag.findMany({
+        where: { userId: session?.user.id },
+        select: { id: true, name: true, color: true }
+    });
 }

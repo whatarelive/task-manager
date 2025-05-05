@@ -1,4 +1,5 @@
 import type { LucideProps } from "lucide-react";
+import type { UserTag } from "@prisma/client";
 
 export interface FeatureDetail {
     readonly title: string;
@@ -21,12 +22,8 @@ export interface StateForm {
     message: string;
 }
 
-// Tipo de dato del objeto que define la etiqueta
-export interface Tag {
-    id: number;
-    name: string;
-    color: string;
-}
+// Tipo de dato del objeto que define la etiqueta del usuario
+export type UserTag = Omit<UserTag, "userId">;
 
 // Tipo de dato del objeto que define la tarea
 export interface Task {

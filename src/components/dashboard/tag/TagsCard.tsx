@@ -1,28 +1,27 @@
 "use client";
 
-import clsx from "clsx";
 import Image from "next/image";
-import { use, useEffect } from "react";
+import { use, useEffect, type FC } from "react";
 import { useTagStore } from "@/store/tag-store";
 import { showErrorToast } from "@/components/ui/sonner";
 import { TagItem } from "@/components/dashboard/tag/TagItem";
 import { CreateTagModal } from "@/components/dashboard/tag/CreateTagModal";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import type { Tag } from "@/interfaces/data.interfaces";
+import type { UserTag } from "@/interfaces/data.interfaces";
 
 interface Props {
-    getTags: Promise<{
-        error?: boolean;
-        data?: Tag[];
-    }>;
+    getTags: Promise<UserTag[]>;
 }
 
-export const TagsCard = ({ getTags }: Props) => {
-    const { data, error } = use(getTags);
+export const TagsCard: FC<Props> = ({ getTags }) => {
+    // Peticiónn de las etiquetas
+    const data = use(getTags);
     const { tags, setTags } = useTagStore((state) => state);
 
-    if (!data && error) showErrorToast({ title: "Error al cargar las etiquetas" });
+    // Mensaje de error para cuando falla la petición de las etiquetas
+    if (!data) showErrorToast({ title: "Error al cargar las etiquetas" });
 
+    // Efecto para guardar las etiquetas en la store de las etiquetas.
     useEffect(() => {
         if (!data) return;
         setTags(data);
@@ -34,14 +33,11 @@ export const TagsCard = ({ getTags }: Props) => {
                 <CardTitle>Etiquetas</CardTitle>
                 <CardDescription>Organiza tus tareas por categorías</CardDescription>
             </CardHeader>
-            <CardContent 
-                className={
-                    clsx({ "overflow-auto elegant-scrollbar": tags.length >= 4 })
-                }
-            >
-                <div className="space-y-4">
+
+            <CardContent className={tags.length >= 4 ? "overflow-auto elegant-scrollbar" : ""}>
+                <div className="space-y-3 pb-3">
                     { 
-                        !tags || tags.length === 0 
+                        tags.length === 0 
                             ? (
                                 <div className="flex flex-col items-center gap-3">
                                     <Image 
@@ -59,6 +55,7 @@ export const TagsCard = ({ getTags }: Props) => {
                     }
                 </div>
             </CardContent>
+
             <CardFooter>
                 <CreateTagModal />
             </CardFooter>
