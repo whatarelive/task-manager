@@ -2,7 +2,8 @@
 
 import { Trash2 } from "lucide-react";
 import { useTagStore } from "@/store/tag-store";
-import { Button } from "@/components/ui/button";
+import { DialogClose } from "@/components/ui/dialog";
+import { AlertModal } from "@/components/global/AlertModal";
 import type { FC } from "react";
 import type { UserTag } from "@/interfaces/data.interfaces";
 
@@ -16,9 +17,19 @@ export const TagItem: FC<{ tag: UserTag }> = ({ tag }) => {
                 <span>{ tag.name }</span>
             </div>
 
-            <Button variant="destructive" size="icon" onClick={async () => await removeTag(tag.id)}>
-                <Trash2 className="w-8 h-8"/>
-            </Button>
+            <AlertModal 
+                title="Eliminar Etiqueta" 
+                message={`Estas seguro que deseas eliminar la etiqueta ${tag.name}`}
+            >
+                <DialogClose 
+                    variant="destructive"
+                    onClick={async () => await removeTag(tag.id)}
+                    aria-label="Eliminar etiqueta"
+                >
+                    <Trash2 className="w-6 h-6"/>
+                    Aceptar
+                </DialogClose>
+            </AlertModal>
         </div>
     )
 }
