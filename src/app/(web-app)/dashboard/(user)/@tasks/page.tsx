@@ -7,19 +7,21 @@ import type { TaskStatus } from "@prisma/client";
 
 interface Props {
     searchParams: Promise<{
-        [key: string]: string | undefined;
+        tab?: string;
+        tag?: string;
+        query?: string;
     }>;
 }
 
 export default async function Tasks({ searchParams }: Props) {
     // Extracción de la parametro de estado de la pestaña seleccionada.
-    const selectTab = (await searchParams).tab;
-    const status = selectTab !== "all" ? (selectTab?.toUpperCase() as TaskStatus) : undefined;  
+    const params = await searchParams;
+    const status = params.tab !== "all" ? (params.tab?.toUpperCase() as TaskStatus) : undefined;  
     
     const session = await auth();
 
     // Tareas de a mostrar en la pestaña seleccionada.
-    const tasks = await getTask(session?.user.id!, status);
+    const tasks = await getTask(session?.user.id!, status, params.tag, params.query);
 
     return ( 
         <section className="w-full">
