@@ -1,8 +1,9 @@
-import { type FC } from "react";
+import type { FC } from "react";
 import { es } from "date-fns/locale/es";
 import { format } from "date-fns/format";
 import { CalendarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { AlertModal } from "@/components/global/AlertModal";
 import { TaskRemoveButton, TasksCheckButton } from "@/components/dashboard/tasks/TasksItemActions";
 import type { UserTag, UserTask } from "@prisma/client";
 
@@ -44,7 +45,12 @@ export const TaskItem: FC<Props> = ({ task }) => {
             </div>
 
             {/* Boton para eliminar la tarea */}
-            <TaskRemoveButton id={task.id}/>
+            <AlertModal 
+                title="Eliminar Tarea" 
+                message={`Estas seguro que deseas eliminar la tarea ${task.title}`}
+            >
+                <TaskRemoveButton id={task.id}/>
+            </AlertModal>
         </li>
     )
 }
