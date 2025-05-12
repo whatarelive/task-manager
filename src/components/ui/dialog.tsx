@@ -3,8 +3,13 @@
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { XIcon } from "lucide-react"
-
 import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button";
+import { VariantProps } from "class-variance-authority"
+
+interface PropsClose 
+  extends React.ComponentProps<typeof DialogPrimitive.Close>, 
+  VariantProps<typeof buttonVariants> {}
 
 function Dialog({
   ...props
@@ -24,11 +29,13 @@ function DialogPortal({
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
 
-function DialogClose({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
-}
+export const DialogClose: React.FC<PropsClose> = ({ size, variant, className, ...props }) => (
+    <DialogPrimitive.Close 
+        data-slot="dialog-close"
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props} 
+    />
+)
 
 function DialogOverlay({
   className,
@@ -123,7 +130,6 @@ function DialogDescription({
 
 export {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
